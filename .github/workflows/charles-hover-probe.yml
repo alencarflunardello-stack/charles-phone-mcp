@@ -1,0 +1,31 @@
+name: Charles isolated hover probe
+on:
+  push:
+    branches: [charles-hover-0.19.1]
+    paths: ['tools/hover-probe/**', '.github/workflows/charles-hover-probe.yml']
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd
+      - name: Compile isolated display probe
+        run: |
+          set -eu
+          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+          mkdir -p classes out
+          javac -source 8 -target 8 -cp "$ANDROID_HOME/platforms/android-36/android.jar" -d classes tools/hover-probe/HoverProbe.java
+          "$ANDROID_HOME/build-tools/36.0.0/d8" --lib "$ANDROID_HOME/platforms/android-36/android.jar" --min-api 33 --output out/charles-hover-probe.jar classes/br/charles/hoverprobe/HoverProbe.class
+          cd out
+          sha256sum charles-hover-probe.jar > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: charles-hover-probe
+          path: out/
