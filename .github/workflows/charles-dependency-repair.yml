@@ -1,0 +1,55 @@
+name: Charles dependency repair candidate
+on:
+  push:
+    branches: [charles-hover-0.19.1]
+    paths: ['.github/workflows/charles-dependency-repair.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22'
+      - name: Upgrade audited dependencies in a candidate checkout
+        working-directory: server
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --package-lock-only --ignore-scripts --save-exact zod@4.6.7
+          npm uninstall --package-lock-only --ignore-scripts zod-to-json-schema
+          npm audit fix --package-lock-only --ignore-scripts
+          python3 - <<'PY'
+          from pathlib import Path
+          for p in Path('src').rglob('*.js'):
+              s=p.read_text()
+              t=s.replace("import {zodToJsonSchema} from 'zod-to-json-schema';\n","").replace("zodToJsonSchema(d.schema,{$refStrategy:'none'})","z.toJSONSchema(d.schema,{io:'input',unrepresentable:'any'})").replace('z.record(z.unknown())','z.record(z.string(),z.unknown())')
+              if s!=t: p.write_text(t)
+          PY
+          npm ci --ignore-scripts
+      - name: Run regression tests and audit
+        working-directory: server
+        shell: bash
+        run: |
+          npm test
+          npm audit --omit=dev
+      - name: Export reviewed diff and lockfile
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p dependency-repair
+          git diff -- server > dependency-repair/candidate.patch
+          cp server/package.json server/package-lock.json dependency-repair/
+          git diff --stat -- server
+          git diff --check -- server
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: charles-dependency-repair-candidate
+          path: dependency-repair/
