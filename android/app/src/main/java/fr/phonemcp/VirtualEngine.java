@@ -387,7 +387,7 @@ final class VirtualEngine {
         if("wait_and_click".equals(op))return waitAndClick(pkg,args);
         if("snapshot".equals(op))return snapshot(pkg,args,stableGeometry);
         if("screenshot".equals(op))return screenshot(pkg,args);
-        if(!Arrays.asList("click","long_press","set_text","scroll","back","tap","swipe","double_tap","pinch","edit_text","press_key","scroll_to_node","node_details").contains(op))throw new IllegalArgumentException("Commande parallèle inconnue.");
+        if(!Arrays.asList("click","long_press","set_text","scroll","back","tap","swipe","hover","double_tap","pinch","edit_text","press_key","scroll_to_node","node_details").contains(op))throw new IllegalArgumentException("Commande parallèle inconnue.");
         AccessibilityNodeInfo root=guard(pkg,windowId);
         boolean actionAttempted=false;
         try{
@@ -396,17 +396,17 @@ final class VirtualEngine {
                 throw new IllegalStateException("Lecture périmée. Demandez phone_snapshot avant l’action.");
             boolean success;
             if("back".equals(op)){ requireFocusedWindow(root);actionAttempted=true;key(KeyEvent.KEYCODE_BACK);success=true; }
-            else if(Arrays.asList("tap","swipe","double_tap","pinch").contains(op)){
+            else if(Arrays.asList("tap","swipe","hover","double_tap","pinch").contains(op)){
                 requireFocusedWindow(root);
                 if(containsPassword(root,new int[]{0},0))throw new IllegalStateException("Action par coordonnées refusée sur un champ protégé.");
                 Rect area=new Rect();root.getBoundsInScreen(area);
-                List<TouchGestures.Stroke> strokes=TouchGestures.strokes(op,args,area);
+                List<TouchGestures.Stroke> strokes=TouchGestures.strokes("hover".equals(op)?"tap":op,args,area);
                 String changed=coordinateGuard.validate(CoordinateObservation.frame(root,displayId,WIDTH,HEIGHT),CoordinateObservation.paths(strokes),snapshotGeneration!=generation||snapshotContentVersion!=contentVersion,SystemClock.elapsedRealtime());
                 if(changed!=null)throw new IllegalStateException(changed);
                 for(TouchGestures.Stroke stroke:strokes)checkGestureOverlays(root.getWindowId(),stroke);
                 // Consume once before the first injection: an interrupted/ambiguous gesture is never replayable.
                 actionAttempted=true;
-                dispatchGesture(pkg,strokes);
+                dispatchGesture(pkg,strokes,"hover".equals(op));
                 success=true;
             }else{
                 requireFocusedWindow(root);
@@ -437,7 +437,7 @@ final class VirtualEngine {
                 else{String text=args.getString("text");if(text.length()>4000 || !node.isEditable())throw new IllegalArgumentException("Champ non éditable ou texte trop long.");Bundle data=new Bundle();data.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,text);success=node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT,data);}
             }
             clearSnapshot();if(!success)throw new IllegalStateException("L’app a refusé l’action. Relisez l’écran.");
-            return new JSONObject().put("performed",true).put("displayId",displayId).put("inputDelivery",Arrays.asList("tap","swipe","double_tap","pinch").contains(op)?"android_input_acknowledged_effect_unverified":"accessibility_action_accepted").put("applicationEffectVerified",false).put("instruction","Vérifiez le résultat dans observation. Une livraison tactile ne prouve pas que l’application a effectué l’action attendue.");
+            return new JSONObject().put("performed",true).put("displayId",displayId).put("inputDelivery",Arrays.asList("tap","swipe","hover","double_tap","pinch").contains(op)?"android_input_acknowledged_effect_unverified":"accessibility_action_accepted").put("applicationEffectVerified",false).put("instruction","Vérifiez le résultat dans observation. Une livraison tactile ne prouve pas que l’application a effectué l’action attendue.");
         }finally{if(actionAttempted)clearSnapshot();root.recycle();}
     }
     private static final class PlanJob {
@@ -1142,6 +1142,10 @@ final class VirtualEngine {
     }
     private static final class GesturePreflightChanged extends IllegalStateException {GesturePreflightChanged(String message){super(message);}}
     private void dispatchGesture(String pkg,List<TouchGestures.Stroke> strokes)throws Exception{
+        dispatchGesture(pkg,strokes,false);
+    }
+    private void dispatchGesture(String pkg,List<TouchGestures.Stroke> strokes,boolean hover)throws Exception{
+        if(hover&&(strokes.size()!=1||strokes.get(0).x!=strokes.get(0).toX||strokes.get(0).y!=strokes.get(0).toY))throw new SecurityException("Mouse hover must be a single stationary point.");
         requireSession();if(gestureDelegate==null)throw new IllegalStateException("Le canal de gestes parallèle n’est pas prêt. Aucun geste n’a été envoyé.");
         AccessibilityNodeInfo root=guard(pkg,windowId);JSONObject request;
         try{
@@ -1161,7 +1165,8 @@ final class VirtualEngine {
                 if(!request.getString("targetDigest").equals(current)){if(adExecuting)throw new GesturePreflightChanged("La cible du geste a changé avant son envoi.");throw new SecurityException("La cible du geste a changé avant son envoi. Relisez la fenêtre.");}
                 for(TouchGestures.Stroke stroke:strokes)checkGestureOverlays(fresh.getWindowId(),stroke);
             }finally{fresh.recycle();}
-            NativeGestureInjector.dispatch(strokes,displayId,uid,WIDTH,HEIGHT,this::requireSession);requireSession();}
+            if(hover){TouchGestures.Stroke target=strokes.get(0);NativeGestureInjector.hover(target.x,target.y,displayId,uid,WIDTH,HEIGHT,this::requireSession);}
+            else NativeGestureInjector.dispatch(strokes,displayId,uid,WIDTH,HEIGHT,this::requireSession);requireSession();}
         catch(ParallelGestureChannel.Uncertain unknown){controlLost=true;controlLostReason="gesture_result_uncertain";revoked=true;Runnable listener=lostListener;if(listener!=null)listener.run();worker.post(this::stopInternal);throw unknown;}
         finally{gestureInFlight=false;}
     }
