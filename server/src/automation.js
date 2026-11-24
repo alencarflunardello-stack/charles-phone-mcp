@@ -1,3 +1,4 @@
+import {chromeTabs} from './browser-tabs.js';
 import {startConditionalPlan,conditionalResult,decodePlacement} from './conditional-plans.js';
 import {boardMove,chessBoard} from './chess-board.js';
 import {startApp,uiFlow,adResult} from './fast-workflows.js';
@@ -8,6 +9,7 @@ import {withLegacyLongPress} from './legacy-interactions.js';
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 export async function runOperation(command,op,args){
   const send=command;command=(operation,selection)=>recoverRead(send,operation,selection);
+  if(op==='chrome_tabs')return chromeTabs(command,args);
   if(op==='plan_start')return startConditionalPlan(command,args);
   if(op==='plan_status'||op==='plan_cancel')return conditionalResult(command,args,op);
   if(['ad_start','ad_status','ad_cancel'].includes(op))return adResult(command,op,args);
