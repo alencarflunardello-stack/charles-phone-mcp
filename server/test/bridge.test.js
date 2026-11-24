@@ -351,3 +351,18 @@ test('Charles parallel batch uses independent lanes and rejects duplicate sessio
   const denied=await readClient.callTool({name:'phone_parallel_batch',arguments:{items:[first,second]}});
   assert.equal(denied.isError,true);assert.equal(seen.length,2);
 });
+
+test('owner browser pairing uses one-time nonce and password; no credential in redirect',async t=>{
+ const f=await fixture(t);
+ const nonce=async()=>{const page=await fetch(f.base+'/admin/setup');assert.equal(page.status,200);assert.equal(page.headers.get('cache-control'),'no-store');return (await page.text()).match(/name="nonce" value="([^"]+)"/)[1];};
+ const wrong=await nonce();
+ assert.equal((await f.post('/admin/setup',{nonce:wrong,password:'wrong'})).status,401);
+ assert.equal((await f.post('/admin/setup',{nonce:wrong,password:config.adminPassword})).status,401);
+ const valid=await nonce();
+ const result=await f.post('/admin/setup',{nonce:valid,password:config.adminPassword});
+ assert.equal(result.status,303);const location=result.headers.get('location');assert.match(location,/^\/pairing\/[A-Za-z0-9_-]+$/);
+ assert.ok(!location.includes(config.adminPassword)&&!location.includes(config.phoneToken));
+ const code=location.split('/').pop();const html=await(await fetch(f.base+location)).text();assert.match(html,/charlesphonemcp:\/\/pair/);
+ assert.equal((await f.post('/pair',{code})).status,200);
+ assert.equal((await f.post('/pair',{code})).status,401);
+});
