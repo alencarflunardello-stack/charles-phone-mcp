@@ -35,6 +35,28 @@ export function makeMcp(grant,command,connection,version=VERSION,scheduler){
     if(!grant.scopes.includes(def.write?'phone.write':'phone.read'))return failure('Accès OAuth insuffisant pour cette action.','insufficient_scope');
     const parsed=def.schema.safeParse(args);
     if(!parsed.success)return failure('Invalid arguments: '+parsed.error.issues.map(i=>`${i.path.join('.')||'arguments'}: ${i.message}`).join('; '),'invalid_arguments');
+    if(def.op==='parallel_batch'){
+      // Preflight all items before dispatching any input. Same-session ordering stays in the original scheduler.
+      const prepared=[],seen=new Set();
+      for(const item of parsed.data.items){
+        const sub=byOperation.get(item.operation);
+        if(!sub||item.arguments.includeScreenshot===true||item.arguments.observe===false)
+          return failure('Batch requires supported operations and normal observation without screenshots.','invalid_arguments');
+        const selected=sub.schema.safeParse({...item.arguments,includeScreenshot:false});
+        // Read schemas which have no includeScreenshot field must be parsed unchanged.
+        const validated=selected.success?selected:sub.schema.safeParse(item.arguments);
+        if(!validated.success||!validated.data.sessionId||seen.has(validated.data.sessionId)||!grant.scopes.includes(sub.write?'phone.write':'phone.read'))
+          return failure('Batch requires unique owned sessions, valid arguments and appropriate scopes.','invalid_arguments');
+        seen.add(validated.data.sessionId);
+        prepared.push({sub,args:validated.data});
+      }
+      const started=performance.now();
+      const results=await Promise.all(prepared.map(async({sub,args})=>{
+        const result=await execute(sub,args);
+        return {sessionId:args.sessionId,operation:sub.op,isError:!!result.isError,content:result.content.filter(v=>v.type==='text').map(v=>{try{const data=JSON.parse(v.text);delete data.tooling;return data;}catch{return v.text;}})};
+      }));
+      return {content:[{type:'text',text:JSON.stringify(guidance.attach({results,elapsedMs:Math.round(performance.now()-started),allReturned:results.every(r=>!r.isError),applicationEffectsRequireVerification:true}))}]};
+    }
     const toolStart=performance.now(),startedAt=Date.now();let deviceMs=0,deviceCommands=0,queueMs=0,success=false;
     try{
       const args={...parsed.data,_ownerKey:ownerKey};
