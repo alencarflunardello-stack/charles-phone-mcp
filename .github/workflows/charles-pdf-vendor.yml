@@ -1,0 +1,26 @@
+name: Charles PDF vendor integrity
+on:
+  push:
+    branches: [browser-pdf-vendor-6.5.438]
+    paths: ['.github/workflows/charles-pdf-vendor.yml']
+permissions:
+  contents: read
+jobs:
+  vendor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Fetch official release and verify pinned digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --max-time 90 --retry 1 --proto '=https' --output pdfjs-6.5.438-legacy-dist.zip https://github.com/mozilla/pdf.js/releases/download/v6.5.438/pdfjs-6.5.438-legacy-dist.zip
+          echo '55138aa33b5f1f6f68809895338b947f395f344eb6381d424b2420d6daa6a844  pdfjs-6.5.438-legacy-dist.zip' | sha256sum -c -
+          unzip -tq pdfjs-6.5.438-legacy-dist.zip
+      - name: Publish verified dependency only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: charles-pdfjs-official-6.5.438
+          path: pdfjs-6.5.438-legacy-dist.zip
+          retention-days: 3
+          if-no-files-found: error
