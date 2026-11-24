@@ -61,17 +61,35 @@ export function installOAuth(app, config) {
     if (!scopes.length || scopes.some(s => !scopesSupported.includes(s))) return invalid(res,'invalid_scope');
     const nonce = randomToken();
     pending.set(digest(nonce),{clientId:q.client_id,redirectUri:q.redirect_uri,challenge:q.code_challenge,state:q.state,
-      scopes,expires:Date.now()+300000});
+      scopes,approvalId:randomUUID(),approved:false,expires:Date.now()+300000});
+    const request=pending.get(digest(nonce));
     res.set('Content-Security-Policy',authorizationCsp(q.redirect_uri));
     res.type('html').send(`<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Charles PhoneMCP — autorização do proprietário</title>
       <body><main><h1>Charles PhoneMCP — autorizar conexão</h1><p>Aplicativo solicitante: ${escape(client.client_name)} (nome informado pelo próprio cliente; confira também o destino abaixo).</p>
       <p>Esta autorização permite ${scopes.includes('phone.write') ? 'ler e controlar' : 'ler'} somente os aplicativos selecionados no PhoneMCP.</p>
       <p>Destino da conexão: <strong>${escape(new URL(q.redirect_uri).hostname)}</strong><br>${escape(q.redirect_uri)}</p>
       <p>Permissões solicitadas: ${escape(scopes.join(', '))}. Confira o destino antes de autorizar.</p>
-      <p>O telefone precisa ter uma sessão ativa. Aplicativos, capturas e ações continuam limitados às permissões escolhidas no aparelho. Este formulário pertence ao servidor pessoal Charles PhoneMCP; não informe sua senha do Google, ChatGPT ou de qualquer outra conta.</p>
+      <p>O telefone precisa ter uma sessão ativa. Aplicativos, capturas e ações continuam limitados às permissões escolhidas no aparelho. Este servidor não solicita senhas nem instalação de software nesta página. O proprietário deve aprovar a solicitação pelo canal administrativo autenticado, fora do navegador.</p>
       <form method="post" action="/approve"><input type="hidden" name="nonce" value="${nonce}">
-      <label>Senha administrativa exclusiva deste servidor (ADMIN_PASSWORD)<br><input name="password" type="password" required autocomplete="current-password"></label>
-      <p><button name="decision" value="allow">Autorizar</button> <button name="decision" value="deny" formnovalidate>Recusar</button></p></form></main></body></html>`);
+      <p>Referência da solicitação: <code>${escape(request.approvalId)}</code>. Confirme o cliente, destino e permissões no canal administrativo antes de continuar.</p>
+      <p><button name="decision" value="allow">Concluir autorização previamente aprovada</button> <button name="decision" value="deny" formnovalidate>Recusar</button></p></form></main></body></html>`);
+  });
+  // Owner-only out-of-band approval: no password or bearer token in browser forms.
+  // The administrator must compare request identity, destination and scopes with
+  // the request they initiated. Approval never follows from the public reference alone.
+  app.post('/admin/oauth/request',limited(20,600000),(req,res)=>{
+    if(!sameSecret(req.headers.authorization,'Bearer '+config.adminPassword))return invalid(res,'unauthorized',401);
+    const id=req.body?.approvalId;
+    const request=[...pending.values()].find(v=>v.approvalId===id&&v.expires>Date.now());
+    if(!request)return invalid(res,'request_not_found',404);
+    const details={approvalId:request.approvalId,clientId:request.clientId,clientName:clients.get(request.clientId)?.client_name,redirectUri:request.redirectUri,scopes:request.scopes,expiresAt:request.expires,approved:request.approved};
+    if(req.body?.decision==='allow'){
+      if(request.approved||req.body.clientId!==request.clientId||req.body.redirectUri!==request.redirectUri||JSON.stringify(req.body.scopes)!==JSON.stringify(request.scopes))return invalid(res,'request_mismatch',409);
+      request.approved=true;
+      return res.json({...details,approved:true});
+    }
+    if(req.body?.decision!==undefined)return invalid(res,'invalid_decision');
+    return res.json(details);
   });
   app.post('/approve',limited(8,900000),(req,res) => {
     const nonce = typeof req.body?.nonce === 'string' ? req.body.nonce : '';
@@ -81,7 +99,7 @@ export function installOAuth(app, config) {
       pending.delete(digest(nonce)); const redirect = new URL(request.redirectUri); redirect.searchParams.set('error','access_denied');
       if (request.state) redirect.searchParams.set('state',request.state); return res.redirect(303,redirect.href);
     }
-    if (req.body.decision !== 'allow' || !sameSecret(req.body.password,config.adminPassword)) return invalid(res,'access_denied',401);
+    if (req.body.decision !== 'allow' || !request.approved || Object.hasOwn(req.body,'password')) return invalid(res,'access_denied',401);
     pending.delete(digest(nonce)); const code = randomToken();
     codes.set(digest(code),{...request,expires:Date.now()+60000});
     const redirect = new URL(request.redirectUri); redirect.searchParams.set('code',code);
