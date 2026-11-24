@@ -46,6 +46,36 @@ final class NativeGestureInjector {
             }
         }
     }
+    /** Mouse hover only: no button, no click, no drag, no physical display fallback. */
+    static void hover(int x,int y,int display,int uid,int width,int height,Guard guard)throws Exception{
+        if(android.os.Process.myUid()!=2000||display<=0||uid<0||x<0||y<0||x>=width||y>=height)
+            throw new SecurityException("Invalid mouse hover target.");
+        guard.check();requireInteractive(display);
+        MotionEvent.PointerProperties property=new MotionEvent.PointerProperties();
+        property.id=0;property.toolType=MotionEvent.TOOL_TYPE_MOUSE;
+        MotionEvent.PointerCoords coordinate=new MotionEvent.PointerCoords();
+        coordinate.x=x;coordinate.y=y;coordinate.pressure=0;coordinate.size=0;
+        long now=SystemClock.uptimeMillis();
+        MotionEvent motion=MotionEvent.obtain(now,now,MotionEvent.ACTION_HOVER_MOVE,1,
+            new MotionEvent.PointerProperties[]{property},new MotionEvent.PointerCoords[]{coordinate},
+            0,0,1,1,0,0,InputDevice.SOURCE_MOUSE,0);
+        try{
+            InputEvent.class.getMethod("setDisplayId",int.class).invoke(motion,display);
+            if((Integer)InputEvent.class.getMethod("getDisplayId").invoke(motion)!=display)
+                throw new SecurityException("Mouse event display mismatch.");
+            IBinder binder=(IBinder)Class.forName("android.os.ServiceManager").getMethod("getService",String.class).invoke(null,"input");
+            Object input=Class.forName("android.hardware.input.IInputManager$Stub").getMethod("asInterface",IBinder.class).invoke(null,binder);
+            Method inject=Class.forName("android.hardware.input.IInputManager").getMethod("injectInputEventToTarget",InputEvent.class,int.class,int.class);
+            guard.check();requireInteractive(display);
+            boolean delivered;
+            long identity=Binder.clearCallingIdentity();
+            try{delivered=Boolean.TRUE.equals(inject.invoke(input,motion,2,uid));}
+            catch(InvocationTargetException failure){Throwable cause=failure.getCause();if(cause instanceof Exception)throw (Exception)cause;throw failure;}
+            finally{Binder.restoreCallingIdentity(identity);}
+            if(!delivered)throw new IllegalStateException("Android refused target-UID mouse hover. Observe again; do not replay automatically.");
+            guard.check();requireInteractive(display);
+        }finally{motion.recycle();}
+    }
     private static void requireInteractive(int display)throws Exception{
         IBinder binder=(IBinder)Class.forName("android.os.ServiceManager").getMethod("getService",String.class).invoke(null,"power");
         Object power=Class.forName("android.os.IPowerManager$Stub").getMethod("asInterface",IBinder.class).invoke(null,binder);
