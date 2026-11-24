@@ -12,6 +12,8 @@ for path in android.rglob("*"):
     if path.name == "AndroidManifest.xml":
         updated = updated.replace('android:label="Phone MCP"', 'android:label="Charles Phone MCP (Pilot)"').replace('android:scheme="phonemcp"', 'android:scheme="charlesphonemcp"')
     updated = updated.replace("phonemcp://pair", "charlesphonemcp://pair")
+    if path.suffix == ".java":
+        updated = updated.replace('"phonemcp".equals(', '"charlesphonemcp".equals(')
     if updated != raw: path.write_text(updated,encoding="utf-8")
 for path in sorted(android.rglob("phonemcp"),key=lambda p:len(p.parts),reverse=True):
     if path.is_dir() and path.parent.name == "fr":
