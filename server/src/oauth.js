@@ -63,15 +63,15 @@ export function installOAuth(app, config) {
     pending.set(digest(nonce),{clientId:q.client_id,redirectUri:q.redirect_uri,challenge:q.code_challenge,state:q.state,
       scopes,expires:Date.now()+300000});
     res.set('Content-Security-Policy',authorizationCsp(q.redirect_uri));
-    res.type('html').send(`<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Autoriser Phone MCP</title>
-      <body><main><h1>Connecter ${escape(client.client_name)}</h1>
-      <p>Autorisez ce client à ${scopes.includes('phone.write') ? 'lire et contrôler' : 'lire'} les apps sélectionnées dans Phone MCP.</p>
-      <p>Destination de la connexion : <strong>${escape(new URL(q.redirect_uri).hostname)}</strong><br>${escape(q.redirect_uri)}</p>
-      <p>Droits demandés : ${escape(scopes.join(', '))}. Vérifiez la destination avant de saisir le mot de passe.</p>
-      <p>Le téléphone doit avoir une session active. Les apps, captures et actions restent limitées par vos choix sur le téléphone.</p>
+    res.type('html').send(`<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Charles PhoneMCP — autorização do proprietário</title>
+      <body><main><h1>Charles PhoneMCP — autorizar conexão</h1><p>Aplicativo solicitante: ${escape(client.client_name)} (nome informado pelo próprio cliente; confira também o destino abaixo).</p>
+      <p>Esta autorização permite ${scopes.includes('phone.write') ? 'ler e controlar' : 'ler'} somente os aplicativos selecionados no PhoneMCP.</p>
+      <p>Destino da conexão: <strong>${escape(new URL(q.redirect_uri).hostname)}</strong><br>${escape(q.redirect_uri)}</p>
+      <p>Permissões solicitadas: ${escape(scopes.join(', '))}. Confira o destino antes de autorizar.</p>
+      <p>O telefone precisa ter uma sessão ativa. Aplicativos, capturas e ações continuam limitados às permissões escolhidas no aparelho. Este formulário pertence ao servidor pessoal Charles PhoneMCP; não informe sua senha do Google, ChatGPT ou de qualquer outra conta.</p>
       <form method="post" action="/approve"><input type="hidden" name="nonce" value="${nonce}">
-      <label>Mot de passe du serveur (ADMIN_PASSWORD)<br><input name="password" type="password" required autocomplete="current-password"></label>
-      <p><button name="decision" value="allow">Autoriser</button> <button name="decision" value="deny">Refuser</button></p></form></main></body></html>`);
+      <label>Senha administrativa exclusiva deste servidor (ADMIN_PASSWORD)<br><input name="password" type="password" required autocomplete="current-password"></label>
+      <p><button name="decision" value="allow">Autorizar</button> <button name="decision" value="deny" formnovalidate>Recusar</button></p></form></main></body></html>`);
   });
   app.post('/approve',limited(8,900000),(req,res) => {
     const nonce = typeof req.body?.nonce === 'string' ? req.body.nonce : '';
