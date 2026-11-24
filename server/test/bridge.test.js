@@ -366,3 +366,37 @@ test('owner browser pairing uses one-time nonce and password; no credential in r
  assert.equal((await f.post('/pair',{code})).status,200);
  assert.equal((await f.post('/pair',{code})).status,401);
 });
+
+
+test('public service identity does not ask for credentials or redirect',async t=>{
+  const f=await fixture(t);
+  const response=await fetch(f.base+'/',{redirect:'manual'});
+  assert.equal(response.status,200);
+  assert.equal(response.headers.get('location'),null);
+  assert.match(response.headers.get('content-security-policy'),/default-src 'none'/);
+  const html=await response.text();
+  assert.match(html,/Charles PhoneMCP/);
+  assert.match(html,/github\.com\/alencarflunardello-stack\/charles-phone-mcp/);
+  assert.doesNotMatch(html,/<form|<input|<script|<iframe/i);
+});
+test('authorization identifies the service, escapes client identity and supports denial without password',async t=>{
+  const f=await fixture(t);
+  const registered=await f.post('/register',{redirect_uris:[callback],client_name:'<img src=x onerror=alert(1)>'});
+  assert.equal(registered.status,201);
+  const client=await registered.json();
+  const query=new URLSearchParams({client_id:client.client_id,redirect_uri:callback,response_type:'code',code_challenge:challenge,code_challenge_method:'S256',scope:'phone.read',state:'denial'});
+  const response=await fetch(f.base+'/authorize?'+query);
+  assert.equal(response.status,200);
+  const html=await response.text();
+  assert.match(html,/Charles PhoneMCP/);
+  assert.match(html,/não informe sua senha do Google/);
+  assert.doesNotMatch(html,/<img src=x/);
+  assert.match(html,/value="deny" formnovalidate/);
+  const nonce=html.match(/name="nonce" value="([^"]+)"/)[1];
+  const denied=await f.post('/approve',{nonce,decision:'deny'});
+  assert.equal(denied.status,303);
+  const target=new URL(denied.headers.get('location'));
+  assert.equal(target.origin,'https://chatgpt.com');
+  assert.equal(target.searchParams.get('error'),'access_denied');
+  assert.equal(target.searchParams.get('state'),'denial');
+});
