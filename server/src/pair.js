@@ -10,7 +10,7 @@ mkdirSync('runtime',{recursive:true});
 const response=await fetch(`http://127.0.0.1:${endpoint.port}/admin/pairing`,{method:'POST',headers:{Authorization:`Bearer ${config.ADMIN_PASSWORD}`}});
 if(!response.ok)throw new Error('Le serveur local ne répond pas à l’appairage.');
 const pairing=await response.json();
-const link=`phonemcp://pair?${new URLSearchParams({server:pairing.endpoint,code:pairing.code})}`;
+const link=`charlesphonemcp://pair?${new URLSearchParams({server:pairing.endpoint,code:pairing.code})}`;
 const webLink=pairing.endpoint+'/pairing/'+pairing.code;
 const qr=await QRCode.toDataURL(webLink,{width:320,errorCorrectionLevel:'M'});
 writeFileSync('runtime/pairing.private.json',JSON.stringify({...pairing,link,webLink},null,2),{mode:0o600});
