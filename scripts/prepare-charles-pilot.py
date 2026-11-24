@@ -21,9 +21,5 @@ for path in sorted(android.rglob("phonemcp"),key=lambda p:len(p.parts),reverse=T
         dest.parent.mkdir(parents=True,exist_ok=True)
         if dest.exists(): raise RuntimeError(f"Destination exists: {dest}")
         path.rename(dest)
-for path in Path("server/src").rglob("*.js"):
-    raw=path.read_text(encoding="utf-8")
-    updated=raw.replace("phonemcp://pair","charlesphonemcp://pair")
-    if raw!=updated:path.write_text(updated,encoding="utf-8")
 assert "applicationId 'br.charles.phonemcp'" in Path("android/app/build.gradle").read_text()
 print("Pilot package identity prepared. Never use this APK to replace the original.")
