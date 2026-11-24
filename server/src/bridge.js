@@ -32,6 +32,8 @@ export function createBridge(inputConfig) {
   });
   app.use(express.json({limit:'32kb'})); app.use(express.urlencoded({extended:false,limit:'12kb'}));
   const oauth = installOAuth(app,config);
+  // Public service identity. This page never requests credentials or starts a session.
+  app.get('/',(_req,res)=>res.type('html').send('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Charles PhoneMCP — servidor piloto</title></head><body><main><h1>Charles PhoneMCP</h1><p>Servidor piloto independente do projeto Phone-MCP, para controle autorizado de aplicativos Android em sessões isoladas.</p><p>Este serviço pessoal não é uma página de login do Google, da OpenAI ou de outro provedor. Não solicita credenciais dessas contas. Nenhum acesso ao dispositivo é concedido nesta página.</p><p>O pareamento requer autorização do proprietário e um código de uso único. As permissões de aplicativos e sessões são controladas no próprio dispositivo.</p><p>Versão: '+VERSION+'</p><p><a href="https://github.com/alencarflunardello-stack/charles-phone-mcp">Código-fonte público do piloto</a> · <a href="https://github.com/Mirochill/Phone-MCP">Projeto original (MIT)</a> · <a href="/health">Estado do serviço</a></p></main></body></html>'));
   app.get('/health',(_req,res) => res.json({ok:true,version:VERSION}));
   // Public Google Search Console site-ownership proof for this pilot domain only.
   app.get('/googlea0930a7fe97df352.html',(_req,res)=>res.type('html').send('google-site-verification: googlea0930a7fe97df352.html'));
