@@ -1,0 +1,25 @@
+name: Charles third-party APK verification
+on:
+  push:
+    branches: [charles-hover-0.19.1]
+    paths: ['.github/workflows/verify-agent-vscreen.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd
+      - name: Verify Agent-VScreen release provenance
+        run: |
+          set -eu
+          sdkmanager "build-tools;36.0.0"
+          curl -fLsS --retry 2 --max-time 180 -o agent-vscreen.apk https://github.com/kilolonion/agent-vscreen/releases/download/v1.4.1/agent-vscreen-1.4.1.apk
+          echo "0d02801f4568b1a29bb50e26c3bfe8148673b953dbed728909c5b4b179b4ce2a  agent-vscreen.apk" | sha256sum --check
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs agent-vscreen.apk > signer.txt
+          grep -Fq "56b14824549e698017eba907cbc3347ee3a4ba30907efbd6068ea51ff4495756" signer.txt
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging agent-vscreen.apk > manifest.txt
+          grep -Fq "package: name='com.kilon.agentvscreen'" manifest.txt
+          head -n 1 manifest.txt
+          echo "APK checksum, signature, official signer fingerprint and application identity verified."
