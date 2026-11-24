@@ -1,6 +1,5 @@
 import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import {z} from 'zod';
-import {zodToJsonSchema} from 'zod-to-json-schema';
 import {createHash} from 'node:crypto';
 import {describeControlStatus} from './control-status.js';
 import {describeLegacyInteractions} from './legacy-interactions.js';
@@ -12,7 +11,7 @@ export {WebStandardStreamableHTTPServerTransport} from '@modelcontextprotocol/sd
 
 export function makeMcp(grant,command,connection,version=VERSION,scheduler){
   const definitions=operationDefinitions(),byOperation=new Map(definitions.map(d=>[d.op,d]));
-  const catalog=definitions.map(d=>({operation:d.op,tool:d.name,description:d.description,write:d.write,...(d.fileParams?{fileParams:d.fileParams}:{}),inputSchema:zodToJsonSchema(d.schema,{$refStrategy:'none'})}));
+  const catalog=definitions.map(d=>({operation:d.op,tool:d.name,description:d.description,write:d.write,...(d.fileParams?{fileParams:d.fileParams}:{}),inputSchema:z.toJSONSchema(d.schema,{io:'input',unrepresentable:'any'})}));
   const catalogVersion=createHash('sha256').update(JSON.stringify(catalog)).digest('hex').slice(0,16);
   const guidance=createToolGuidance(version,{apiVersion:API_VERSION,catalogVersion});
   const mcp=new McpServer({name:'phone-mcp',version},{instructions:
@@ -90,7 +89,7 @@ export function makeMcp(grant,command,connection,version=VERSION,scheduler){
   });
   for(const readOnly of [true,false])register(readOnly?'phone_read':'phone_action',{
     description:readOnly?'Read through the stable API. Discover operation and arguments with phone_catalog. New read operations are available automatically.':'Execute an authorized write through the stable API. Discover its current arguments with phone_catalog. New actions are available automatically.',
-    inputSchema:{operation:z.string().min(1).max(80),arguments:z.record(z.unknown()).default({})},
+    inputSchema:{operation:z.string().min(1).max(80),arguments:z.record(z.string(),z.unknown()).default({})},
     annotations:{readOnlyHint:readOnly,destructiveHint:!readOnly,idempotentHint:readOnly,openWorldHint:true}
   },async args=>{
     const def=byOperation.get(args.operation)??definitions.find(d=>d.name===args.operation);
