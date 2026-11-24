@@ -219,9 +219,10 @@ public final class BridgeService extends Service {
             PhoneAccessibilityService service = PhoneAccessibilityService.instance;
             boolean notificationCommand = java.util.Arrays.asList("notifications","reply_notification","notification_dismiss","notification_snooze").contains(op);
             boolean fileCommand=filesOperation(op);
+            boolean journalCommand=java.util.Arrays.asList("journal_read","journal_write").contains(op);
             boolean documentCommand=java.util.Arrays.asList("storage_locations","list_files","read_file","write_file","delete_file","shared_content","read_shared_file").contains(op);
             if (notificationCommand && PhoneNotificationService.instance == null) { respond(ws,id,op,null,"Accès aux notifications désactivé",expected); return; }
-            if (!notificationCommand && !fileCommand && !documentCommand && !parallel && service == null && !"status".equals(op) && !"stop".equals(op)) { respond(ws,id,op,null,"Accessibilité désactivée",expected); return; }
+            if (!notificationCommand && !fileCommand && !documentCommand && !journalCommand && !parallel && service == null && !"status".equals(op) && !"stop".equals(op)) { respond(ws,id,op,null,"Accessibilité désactivée",expected); return; }
             cleanupId=id;final int wire=wireEpoch;wakeHeldBeforeCommand=wakeLock.isHeld();executing.put(id,op);updateWakeLease();
             JSONObject commandArgs=message.optJSONObject("args");if(commandArgs==null)commandArgs=new JSONObject();commandArgs.put("_expiresAt",expires);message.put("args",commandArgs);
             PhoneAccessibilityService.Reply reply = (result,error) -> main.post(() -> {
@@ -230,7 +231,8 @@ public final class BridgeService extends Service {
                 if (expires < System.currentTimeMillis()) { respond(ws,id,op,null,"Commande expirée",expected); return; }
                 respond(ws,id,op,result,error,expected);
             });
-            if(documentCommand)documents.execute(()->{try{if(expected!=epoch||!active()||expires<System.currentTimeMillis())throw new IllegalStateException("Command expired or session stopped.");JSONObject args=message.optJSONObject("args");JSONObject result=op.contains("shared")?new ShareInbox(this).execute(op,args):new StorageAccess(this).execute(op,args);reply.done(result,null);}catch(Exception error){reply.done(null,error.getMessage());}});
+            if(journalCommand)documents.execute(()->{try{if(expected!=epoch||wire!=wireEpoch||!active()||expires<System.currentTimeMillis())throw new IllegalStateException("Command expired or session stopped.");reply.done(OperationalJournal.execute(this,op,message.optJSONObject("args")),null);}catch(Exception error){reply.done(null,error.getMessage());}});
+            else if(documentCommand)documents.execute(()->{try{if(expected!=epoch||!active()||expires<System.currentTimeMillis())throw new IllegalStateException("Command expired or session stopped.");JSONObject args=message.optJSONObject("args");JSONObject result=op.contains("shared")?new ShareInbox(this).execute(op,args):new StorageAccess(this).execute(op,args);reply.done(result,null);}catch(Exception error){reply.done(null,error.getMessage());}});
             else if("diagnostics".equals(op)||"diagnostic_probe".equals(op))background.diagnostics(op,message.optJSONObject("args"),reply);
             else if("control_mode".equals(op))controlMode(message.optJSONObject("args"),reply);
             else if(fileCommand)files(op,message.optJSONObject("args"),reply);
