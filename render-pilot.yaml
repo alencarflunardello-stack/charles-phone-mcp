@@ -1,0 +1,23 @@
+# Independent pilot. No existing resource adoption, no credentials committed.
+services:
+  - type: web
+    name: charles-phonemcp-pilot
+    runtime: node
+    plan: free
+    region: virginia
+    branch: charles-hover-0.19.1
+    autoDeploy: false
+    buildCommand: npm ci --prefix server
+    startCommand: cd server && PUBLIC_URL="$RENDER_EXTERNAL_URL" npm start
+    healthCheckPath: /health
+    envVars:
+      - key: PHONE_TOKEN
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: BIND_ADDRESS
+        value: "0.0.0.0"
+      - key: TRUST_PROXY
+        value: "true"
+      - key: NODE_VERSION
+        value: "22"
