@@ -11,7 +11,19 @@ import java.util.concurrent.*;
 /** One owned display/snapshot lane per agent; a shared Android automation registration. */
 @android.annotation.SuppressLint("NewApi")
 final class SessionEngineManager {
-    private static final int MAX_SESSIONS=4;
+    private static final int MAX_SESSIONS=8;
+    // Admission only: never evict active sessions on a transient resource reading.
+    private int admissionLimit(){
+        try{
+            android.app.ActivityManager manager=systemContext().getSystemService(android.app.ActivityManager.class);
+            if(manager==null)return 4;
+            android.app.ActivityManager.MemoryInfo info=new android.app.ActivityManager.MemoryInfo();manager.getMemoryInfo(info);
+            if(info.lowMemory||info.availMem<1536L*1024*1024)return 2;
+            if(info.totalMem>=10L*1024*1024*1024&&info.availMem>=4L*1024*1024*1024&&!android.os.PowerManager.class.cast(systemContext().getSystemService(android.os.PowerManager.class)).isPowerSaveMode())return 8;
+            if(info.availMem>=3L*1024*1024*1024)return 6;
+        }catch(Exception ignored){ }
+        return 4;
+    }
     private final Context ownerContext;
     private volatile Context context;
     private final ConcurrentHashMap<String,Entry> sessions=new ConcurrentHashMap<>();
@@ -70,7 +82,7 @@ final class SessionEngineManager {
         Entry existing=sessions.get(id);if(existing!=null){check(existing,args);return existing;}
         if(terminal.containsKey(id))throw new SecurityException("Session identifier already ended; do not repeat creation.");
         if(locallyBlocked.contains(pkg))throw new SecurityException("Control was stopped on the phone. Resume this application locally before creating a new session.");
-        if(sessions.size()>=MAX_SESSIONS)throw new IllegalStateException("Maximum four independent sessions. End an unused session first.");
+        if(sessions.size()>=admissionLimit())throw new IllegalStateException("Adaptive session limit reached. End an unused session first; existing sessions are preserved.");
         Intent intent=shell().getPackageManager().getLaunchIntentForPackage(pkg);if(intent==null||intent.getComponent()==null)throw new IllegalArgumentException("Application is not launchable.");
         int mode=shell().getPackageManager().getActivityInfo(intent.getComponent(),0).launchMode;
         // Single-task apps receive a nonce-verified fresh task on their own display at launch.
@@ -195,7 +207,7 @@ final class SessionEngineManager {
     private synchronized JSONObject list(String owner)throws Exception{
         JSONArray active=new JSONArray(),ended=new JSONArray(),blocked=new JSONArray();for(Entry entry:sessions.values())if(owner==null||entry.owner.equals(owner))active.put(entry.describe());
         for(JSONObject value:terminal.values())if(owner==null||owner.equals(value.optString("_ownerKey"))){JSONObject copy=new JSONObject(value.toString());copy.remove("_ownerKey");ended.put(copy);}
-        for(String pkg:locallyBlocked)blocked.put(pkg);return new JSONObject().put("sessions",active).put("endedSessions",ended).put("locallyBlockedPackages",blocked).put("maxSessions",MAX_SESSIONS);
+        for(String pkg:locallyBlocked)blocked.put(pkg);return new JSONObject().put("sessions",active).put("endedSessions",ended).put("locallyBlockedPackages",blocked).put("maxSessions",admissionLimit()).put("absoluteMaxSessions",MAX_SESSIONS);
     }
     private synchronized JSONObject status()throws Exception{
         JSONObject value=list(null);int display=-1;for(Entry entry:sessions.values()){display=entry.engine.displayIdentifier();break;}
