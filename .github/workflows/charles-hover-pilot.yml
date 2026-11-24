@@ -1,0 +1,58 @@
+name: Charles hover pilot
+on:
+  push:
+    branches: [charles-hover-0.19.1]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install server dependencies
+        run: npm ci --prefix server
+      - name: Verify hover catalog contract
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {operationDefinitions} from './server/src/operations.js';
+          const h=operationDefinitions().find(d=>d.op==='hover');
+          assert(h && h.write && h.ui);
+          const id='12345678-1234-4234-8234-123456789abc';
+          const base={packageName:'com.android.chrome',sessionId:id,snapshotId:id,x:300,y:400};
+          assert(h.schema.safeParse(base).success);
+          assert(!h.schema.safeParse({...base,sessionId:undefined}).success);
+          assert(!h.schema.safeParse({...base,x:-1}).success);
+          assert(!h.schema.safeParse({...base,button:1}).success);
+          console.log('Hover tool schema verified');
+          JS
+      - name: Server regression suite
+        run: npm test --prefix server
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Android SDK
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - name: Prepare isolated pilot identity
+        run: python3 scripts/prepare-charles-pilot.py
+      - name: Build and lint pilot
+        working-directory: android
+        run: bash gradlew --no-daemon assembleRelease lintRelease
+      - name: Inspect pilot and checksum
+        run: |
+          mkdir -p pilot
+          cp android/app/build/outputs/apk/release/app-release.apk pilot/Charles-Phone-MCP-0.19.1-pilot.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs pilot/*.apk
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging pilot/*.apk | head -n 8
+          cd pilot && sha256sum *.apk > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: charles-phonemcp-hover-pilot
+          path: pilot/
