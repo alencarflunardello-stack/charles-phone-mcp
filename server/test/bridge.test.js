@@ -30,7 +30,16 @@ async function authorization(f,scope='phone.read phone.write') {
     code_challenge:challenge,code_challenge_method:'S256',scope,state:'test_state',resource:config.publicUrl+'/mcp'});
   response = await fetch(f.base+'/authorize?'+query); assert.equal(response.status,200);
   const html = await response.text(), nonce = html.match(/name="nonce" value="([^"]+)"/)[1];
-  response = await f.post('/approve',{nonce,password:config.adminPassword,decision:'allow'}); assert.equal(response.status,303);
+  const approvalId=html.match(/<code>([0-9a-f-]+)<\/code>/)[1];
+  assert.doesNotMatch(html,/type="password"|name="password"/);
+  assert.equal((await f.post('/approve',{nonce,decision:'allow',password:config.adminPassword})).status,401);
+  const admin={Authorization:`Bearer ${config.adminPassword}`};
+  assert.equal((await f.post('/admin/oauth/request',{approvalId})).status,401);
+  const details=await f.post('/admin/oauth/request',{approvalId},admin);assert.equal(details.status,200);
+  const info=await details.json();assert.equal(info.clientId,client.client_id);assert.equal(info.redirectUri,callback);
+  const approved=await f.post('/admin/oauth/request',{approvalId,decision:'allow',clientId:info.clientId,redirectUri:info.redirectUri,scopes:info.scopes},admin);
+  assert.equal(approved.status,200);assert.equal((await approved.json()).approved,true);
+  response = await f.post('/approve',{nonce,decision:'allow'}); assert.equal(response.status,303);
   const location = new URL(response.headers.get('location')); assert.equal(location.searchParams.get('state'),'test_state');
   return {client,code:location.searchParams.get('code')};
 }
@@ -264,7 +273,7 @@ test('pairing endpoint rejects an invalid token',async t => {
   let response=await f.post('/admin/pairing',{}, {Authorization:`Bearer ${config.adminPassword}`});
   assert.equal(response.status,200);const pairing=await response.json();
   assert.equal(pairing.endpoint,config.publicUrl);
-  assert.equal((await fetch(f.base+'/pairing/'+pairing.code)).status,200);
+  assert.equal((await fetch(f.base+'/pairing/'+pairing.code)).status,410);
   assert.equal((await f.post('/pair',{code:'wrong'})).status,401);
   response=await f.post('/pair',{code:pairing.code});assert.equal(response.status,200);
   assert.equal((await response.json()).token,config.phoneToken);
@@ -352,21 +361,18 @@ test('Charles parallel batch uses independent lanes and rejects duplicate sessio
   assert.equal(denied.isError,true);assert.equal(seen.length,2);
 });
 
-test('owner browser pairing uses one-time nonce and password; no credential in redirect',async t=>{
- const f=await fixture(t);
- const nonce=async()=>{const page=await fetch(f.base+'/admin/setup');assert.equal(page.status,200);assert.equal(page.headers.get('cache-control'),'no-store');return (await page.text()).match(/name="nonce" value="([^"]+)"/)[1];};
- const wrong=await nonce();
- assert.equal((await f.post('/admin/setup',{nonce:wrong,password:'wrong'})).status,401);
- assert.equal((await f.post('/admin/setup',{nonce:wrong,password:config.adminPassword})).status,401);
- const valid=await nonce();
- const result=await f.post('/admin/setup',{nonce:valid,password:config.adminPassword});
- assert.equal(result.status,303);const location=result.headers.get('location');assert.match(location,/^\/pairing\/[A-Za-z0-9_-]+$/);
- assert.ok(!location.includes(config.adminPassword)&&!location.includes(config.phoneToken));
- const code=location.split('/').pop();const html=await(await fetch(f.base+location)).text();assert.match(html,/charlesphonemcp:\/\/pair/);
- assert.equal((await f.post('/pair',{code})).status,200);
- assert.equal((await f.post('/pair',{code})).status,401);
+test('legacy browser pairing and password collection are retired',async t=>{
+  const f=await fixture(t);
+  const page=await fetch(f.base+'/admin/setup');assert.equal(page.status,410);
+  assert.doesNotMatch(await page.text(),/<form|<input|<a href/i);
+  assert.equal((await f.post('/admin/setup',{password:config.adminPassword})).status,410);
+  const r=await f.post('/admin/pairing',{}, {Authorization:`Bearer ${config.adminPassword}`});
+  assert.equal(r.status,200);const {code}=await r.json();
+  const landing=await fetch(f.base+'/pairing/'+code);assert.equal(landing.status,410);
+  assert.doesNotMatch(await landing.text(),/charlesphonemcp:\/\/|<a href/i);
+  assert.equal((await f.post('/pair',{code})).status,200);
+  assert.equal((await f.post('/pair',{code})).status,401);
 });
-
 
 test('public service identity does not ask for credentials or redirect',async t=>{
   const f=await fixture(t);
@@ -389,7 +395,8 @@ test('authorization identifies the service, escapes client identity and supports
   assert.equal(response.status,200);
   const html=await response.text();
   assert.match(html,/Charles PhoneMCP/);
-  assert.match(html,/não informe sua senha do Google/);
+  assert.match(html,/não solicita senhas nem instalação de software/);
+  assert.doesNotMatch(html,/type="password"|name="password"/);
   assert.doesNotMatch(html,/<img src=x/);
   assert.match(html,/value="deny" formnovalidate/);
   const nonce=html.match(/name="nonce" value="([^"]+)"/)[1];
