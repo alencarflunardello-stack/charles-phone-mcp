@@ -33,6 +33,8 @@ export function createBridge(inputConfig) {
   app.use(express.json({limit:'32kb'})); app.use(express.urlencoded({extended:false,limit:'12kb'}));
   const oauth = installOAuth(app,config);
   app.get('/health',(_req,res) => res.json({ok:true,version:VERSION}));
+  // Public Google Search Console site-ownership proof for this pilot domain only.
+  app.get('/googlea0930a7fe97df352.html',(_req,res)=>res.type('html').send('google-site-verification: googlea0930a7fe97df352.html'));
   let pairingUsed = false, pairingCode = config.pairingCode;
   let pairingExpires = Date.now() + 15*60000;
   const issuePairing=()=>{pairingCode=randomToken();pairingUsed=false;pairingExpires=Date.now()+15*60000;return {endpoint:config.publicUrl,code:pairingCode,expiresAt:pairingExpires};};
