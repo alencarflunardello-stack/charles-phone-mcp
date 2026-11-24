@@ -13,7 +13,7 @@ final class I18n {
         try{
             if(translations==null)synchronized(I18n.class){if(translations==null)try(InputStream in=context.getAssets().open("ui-translations.json")){translations=new JSONObject(new String(CompatIO.readAtMost(in,200000),StandardCharsets.UTF_8));}}
             JSONArray values=translations.optJSONArray(source);if(values==null)return source;
-            return values.optString("es".equals(language)?1:"de".equals(language)?2:0,source);
+            return values.optString("es".equals(language)?1:"de".equals(language)?2:"pt".equals(language)?3:0,source);
         }catch(Exception ignored){return source;}
     }
 }
