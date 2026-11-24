@@ -22,7 +22,9 @@ for(const mode of ['configured-local','legacy-tunnel'])test(`pairing CLI support
   if(mode==='legacy-tunnel'){await mkdir(join(temp,'runtime'));await writeFile(join(temp,'runtime/endpoint.json'),JSON.stringify({port}));}
   await run(process.execPath,[script],{cwd:temp,windowsHide:true});
   const pairing=JSON.parse(await readFile(join(temp,'runtime/pairing.private.json'),'utf8'));
-  assert.match(pairing.webLink,/^https:\/\/phone\.example\/pairing\/[A-Za-z0-9_-]+$/);
+  assert.match(pairing.link,/^charlesphonemcp:\/\/pair\?/);
+  const link=new URL(pairing.link);assert.equal(link.searchParams.get('server'),'https://phone.example');assert.equal(link.searchParams.get('code'),pairing.code);
+  assert.equal(Object.hasOwn(pairing,'webLink'),false);
   assert.ok(pairing.expiresAt>Date.now());
   const response=await fetch(`http://127.0.0.1:${port}/pair`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:pairing.code})});
   assert.equal(response.status,200);
