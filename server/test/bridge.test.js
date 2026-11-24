@@ -327,3 +327,27 @@ test('local file sender recovers a lost HTTP response by checking the confirmed 
  const receipt=await sendLocalFile(file,{endpoint:f.base,accessToken:tokens.access_token,fetchImpl:async(...args)=>{const response=await fetch(...args);if(!lost){lost=true;await response.arrayBuffer();throw Error('Simulated lost acknowledgement');}return response;}});
  assert.equal(lost,true);assert.equal(receipt.state,'completed');assert.deepEqual(received,bytes);assert.equal(receipt.bytesDone,bytes.length);
 });
+
+test('Charles parallel batch uses independent lanes and rejects duplicate sessions before dispatch',async t=>{
+  const f=await fixture(t,{commandTimeoutMs:2000}),seen=[];
+  await connectPhone(t,f,(m,socket)=>{
+    seen.push(m);
+    if(seen.length===2)for(const entry of seen)socket.send(JSON.stringify({id:entry.id,ok:true,result:{packageName:entry.args.packageName,sessionId:entry.args.sessionId,nodes:[]}}));
+  });
+  const tokens=await grant(f),client=await connectClient(t,f,tokens.access_token);
+  const first={operation:'snapshot',arguments:{packageName:'com.example.one',sessionId:'12345678-1234-4234-8234-123456789abc'}};
+  const second={operation:'snapshot',arguments:{packageName:'com.example.two',sessionId:'12345678-1234-4234-8234-123456789abd'}};
+  const duplicate=await client.callTool({name:'phone_parallel_batch',arguments:{items:[first,first]}});
+  assert.equal(duplicate.isError,true);assert.equal(seen.length,0);
+  const invalid=await client.callTool({name:'phone_parallel_batch',arguments:{items:[first,{...second,arguments:{...second.arguments,includeScreenshot:true}}]}});
+  assert.equal(invalid.isError,true);assert.equal(seen.length,0);
+  const response=await client.callTool({name:'phone_parallel_batch',arguments:{items:[first,second]}});
+  assert.equal(response.isError,undefined);
+  const data=JSON.parse(response.content[0].text);
+  assert.equal(seen.length,2);assert.equal(data.allReturned,true);assert.equal(data.results.length,2);
+  assert.equal(data.applicationEffectsRequireVerification,true);
+  assert.deepEqual(data.results.map(v=>v.sessionId),[first.arguments.sessionId,second.arguments.sessionId]);
+  const ro=await grant(f,'phone.read'),readClient=await connectClient(t,f,ro.access_token);
+  const denied=await readClient.callTool({name:'phone_parallel_batch',arguments:{items:[first,second]}});
+  assert.equal(denied.isError,true);assert.equal(seen.length,2);
+});
