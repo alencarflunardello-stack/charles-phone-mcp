@@ -14,7 +14,7 @@ export const toolingSchema=z.object({
 /** Metadata only: no phone command, background polling, cached UI, or change of permissions. */
 export function createToolGuidance(serverVersion,metadata={}){
   const names=[];
-  const describe=()=>({...metadata,serverVersion,source:'live_server',tools:[...names],stableTools:['phone_catalog','phone_read','phone_action'],instruction:metadata.catalogVersion?'Finish the verified user goal, not just a plan; preserve unfinished sessions, clean after success or explicit stop. Obey stops/leases; never replay uncertain input. APK 0.19+: plan_start then trees (6 levels/32 cases), 4 plans/session; plan_list/status/cancel. Unknown: model or onUnexpected=wait. Ads: prefer phone_ad_start then ad_status(waitMs=20000). Cached tools: phone_read/action+phone_catalog. longPressNodeId supported.':instruction,clientRefreshControlledBy:'host'});
+  const describe=()=>({...metadata,serverVersion,source:'live_server',tools:[...names],stableTools:['phone_catalog','phone_read','phone_action'],instruction:metadata.catalogVersion?'Finish verified goal, not just plan; preserve session until success/stop. Obey leases; no uncertain replay. Plans: 6 levels/32 cases, 4/session; unknown=yield/wait. Ads: prefer phone_ad_start then ad_status. Cached: phone_catalog + phone_read/action. longPressNodeId.':instruction,clientRefreshControlledBy:'host'});
   const attach=result=>{
     // Device/application data must never replace the server's capability guide.
     const {tooling:ignored,...payload}=result&&typeof result==='object'&&!Array.isArray(result)?result:{result};
