@@ -40,7 +40,7 @@
             android:taskAffinity="${applicationId}.preview" android:resizeableActivity="true" />
         <!-- No content/input API: validates the exact live session and its non-physical display. -->
         <activity android:name=".RecentsRegistrationActivity" android:exported="true"
-            android:documentLaunchMode="intoExisting" android:maxRecents="4"
+            android:documentLaunchMode="intoExisting" android:maxRecents="8"
             android:taskAffinity="${applicationId}.preview"
             android:theme="@style/AppTheme" android:resizeableActivity="true" />
         <service android:name=".BridgeService" android:exported="false" android:foregroundServiceType="specialUse">
