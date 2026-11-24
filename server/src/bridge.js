@@ -45,26 +45,10 @@ export function createBridge(inputConfig) {
     if(!sameSecret(req.headers.authorization,'Bearer '+config.adminPassword))return res.status(401).json({error:'unauthorized'});
     res.json(issuePairing());
   });
-  // Owner-only browser setup. Password is submitted in POST body, never in URLs.
-  const pairingForms=new Map();
-  app.get('/admin/setup',rateLimit({windowMs:60000,limit:20,standardHeaders:'draft-8',legacyHeaders:false}),(req,res)=>{
-    const now=Date.now();for(const [key,expires] of pairingForms)if(expires<=now)pairingForms.delete(key);
-    if(pairingForms.size>=256)return res.status(429).type('text').send('Tente novamente mais tarde.');
-    const nonce=randomToken();pairingForms.set(nonce,now+5*60000);
-    res.type('html').send('<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Charles Phone MCP — pareamento</title><h1>Parear o Charles Phone MCP</h1><p>Use a senha administrativa deste servidor, disponível no painel privado do Render. Não envie a senha em chats.</p><form method="post" action="/admin/setup"><input type="hidden" name="nonce" value="'+nonce+'"><label>Senha administrativa <input type="password" name="password" autocomplete="current-password" required></label><p><button>Gerar link de uso único</button></p></form><p>O link expira em 15 minutos. Nenhuma sessão é iniciada automaticamente.</p></html>');
-  });
-  app.post('/admin/setup',pairingLimit,(req,res)=>{
-    const nonce=typeof req.body?.nonce==='string'?req.body.nonce:'';
-    const expires=pairingForms.get(nonce);pairingForms.delete(nonce);
-    if(!expires||expires<=Date.now()||!sameSecret(req.body?.password,config.adminPassword))return res.status(401).type('text').send('Autorização inválida ou expirada. Volte à página de pareamento e tente novamente.');
-    const result=issuePairing();res.redirect(303,'/pairing/'+result.code);
-  });
-  app.get('/pairing/:code',(req,res) => {
-    if (!pairingCode || pairingUsed || Date.now() > pairingExpires || !sameSecret(req.params.code,pairingCode))
-      return res.status(410).type('text').send('Lien expiré ou déjà utilisé. Régénérez l’appairage sur le PC.');
-    const link='charlesphonemcp://pair?'+new URLSearchParams({server:config.publicUrl,code:pairingCode});
-    res.type('html').send('<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Phone MCP</title><h1>Appairer Phone MCP</h1><p>Installez l’APK Phone MCP, puis ouvrez le lien ci-dessous.</p><p><a href="'+link.replaceAll('&','&amp;')+'">Ouvrir Phone MCP et appairer ce serveur</a></p><p>Aucune session ne démarrera automatiquement.</p></html>');
-  });
+  // Retire browser-based password collection and install/deep-link landing pages.
+  // Owners use the authenticated pairing API and the app's local connection screen.
+  app.all('/admin/setup',(_req,res)=>res.status(410).type('text').send('Pareamento disponível somente no aplicativo e na API administrativa autenticada.'));
+  app.get('/pairing/:code',(_req,res)=>res.status(410).type('text').send('O pareamento é realizado diretamente no aplicativo já instalado.'));
   app.post('/pair',rateLimit({windowMs:60000,limit:8,standardHeaders:'draft-8',legacyHeaders:false}),(req,res) => {
     if (!pairingCode || pairingUsed || Date.now() > pairingExpires || !sameSecret(req.body?.code,pairingCode))
       return res.status(401).json({error:'pairing_code_invalid_or_expired'});
