@@ -43,7 +43,7 @@ export function createBridge(inputConfig) {
   app.get('/pairing/:code',(req,res) => {
     if (!pairingCode || pairingUsed || Date.now() > pairingExpires || !sameSecret(req.params.code,pairingCode))
       return res.status(410).type('text').send('Lien expiré ou déjà utilisé. Régénérez l’appairage sur le PC.');
-    const link='phonemcp://pair?'+new URLSearchParams({server:config.publicUrl,code:pairingCode});
+    const link='charlesphonemcp://pair?'+new URLSearchParams({server:config.publicUrl,code:pairingCode});
     res.type('html').send('<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Phone MCP</title><h1>Appairer Phone MCP</h1><p>Installez l’APK Phone MCP, puis ouvrez le lien ci-dessous.</p><p><a href="'+link.replaceAll('&','&amp;')+'">Ouvrir Phone MCP et appairer ce serveur</a></p><p>Aucune session ne démarrera automatiquement.</p></html>');
   });
   app.post('/pair',rateLimit({windowMs:60000,limit:8,standardHeaders:'draft-8',legacyHeaders:false}),(req,res) => {
