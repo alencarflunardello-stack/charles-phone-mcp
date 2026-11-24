@@ -2,849 +2,1019 @@
   "Session": [
     "Session",
     "Sesión",
-    "Sitzung"
+    "Sitzung",
+    "Sessão"
   ],
   "Fichiers": [
     "Files",
     "Archivos",
-    "Dateien"
+    "Dateien",
+    "Arquivos"
   ],
   "Réglages": [
     "Settings",
     "Ajustes",
-    "Einstellungen"
+    "Einstellungen",
+    "Configurações"
   ],
   "Contrôle": [
     "Control",
     "Control",
-    "Steuerung"
+    "Steuerung",
+    "Controle"
   ],
   "Choisissez un mode pour cette session.": [
     "Choose a mode for this session.",
     "Elige un modo para esta sesión.",
-    "Wähle einen Modus für diese Sitzung."
+    "Wähle einen Modus für diese Sitzung.",
+    "Escolha um modo para esta sessão."
   ],
   "Mode de contrôle": [
     "Control mode",
     "Modo de control",
-    "Steuerungsmodus"
+    "Steuerungsmodus",
+    "Modo de controle"
   ],
   "Écran séparé": [
     "Separate display",
     "Pantalla independiente",
-    "Separater Bildschirm"
+    "Separater Bildschirm",
+    "Tela separada"
   ],
   "Écran du téléphone": [
     "Phone display",
     "Pantalla del teléfono",
-    "Telefonbildschirm"
+    "Telefonbildschirm",
+    "Tela do telefone"
   ],
   "Notifications": [
     "Notifications",
     "Notificaciones",
-    "Benachrichtigungen"
+    "Benachrichtigungen",
+    "Notificações"
   ],
   "L’IA travaille pendant que vous utilisez le téléphone.": [
     "AI works while you use your phone.",
     "La IA trabaja mientras usas el teléfono.",
-    "Die KI arbeitet, während du dein Telefon nutzt."
+    "Die KI arbeitet, während du dein Telefon nutzt.",
+    "A IA trabalha enquanto você usa o telefone."
   ],
   "Contrôle de l’écran que vous voyez.": [
     "Control the screen in front of you.",
     "Controla la pantalla que estás viendo.",
-    "Steuerung des sichtbaren Bildschirms."
+    "Steuerung des sichtbaren Bildschirms.",
+    "Controle a tela que você está usando."
   ],
   "Lire et répondre sans ouvrir les apps.": [
     "Read and reply without opening apps.",
     "Lee y responde sin abrir las apps.",
-    "Lesen und antworten, ohne Apps zu öffnen."
+    "Lesen und antworten, ohne Apps zu öffnen.",
+    "Leia e responda sem abrir os aplicativos."
   ],
   "Éteindre l’écran physique": [
     "Turn off the physical display",
     "Apagar la pantalla física",
-    "Telefonbildschirm ausschalten"
+    "Telefonbildschirm ausschalten",
+    "Desligar a tela física"
   ],
   "Durée": [
     "Duration",
     "Duración",
-    "Dauer"
+    "Dauer",
+    "Duração"
   ],
   "Sans limite": [
     "Unlimited",
     "Sin límite",
-    "Unbegrenzt"
+    "Unbegrenzt",
+    "Sem limite"
   ],
   "30 minutes": [
     "30 minutes",
     "30 minutos",
-    "30 Minuten"
+    "30 Minuten",
+    "30 minutos"
   ],
   "1 heure": [
     "1 hour",
     "1 hora",
-    "1 Stunde"
+    "1 Stunde",
+    "1 hora"
   ],
   "8 heures": [
     "8 hours",
     "8 horas",
-    "8 Stunden"
+    "8 Stunden",
+    "8 horas"
   ],
   "Durée de la session": [
     "Session duration",
     "Duración de la sesión",
-    "Sitzungsdauer"
+    "Sitzungsdauer",
+    "Duração da sessão"
   ],
   "Rallumer l’écran physique": [
     "Turn the phone display on",
     "Encender la pantalla del teléfono",
-    "Telefonbildschirm einschalten"
+    "Telefonbildschirm einschalten",
+    "Ligar a tela física"
   ],
   "Préparer la connexion": [
     "Finish setup",
     "Completar la configuración",
-    "Einrichtung abschließen"
+    "Einrichtung abschließen",
+    "Preparar conexão"
   ],
   "Connecter le serveur": [
     "Connect server",
     "Conectar servidor",
-    "Server verbinden"
+    "Server verbinden",
+    "Conectar servidor"
   ],
   "Coller le lien d’appairage": [
     "Paste your pairing link",
     "Pega el enlace de vinculación",
-    "Kopplungslink einfügen"
+    "Kopplungslink einfügen",
+    "Colar link de pareamento"
   ],
   "Activer Shizuku": [
     "Set up Shizuku",
     "Activar Shizuku",
-    "Shizuku einrichten"
+    "Shizuku einrichten",
+    "Configurar Shizuku"
   ],
   "Autoriser le contrôle de l’écran": [
     "Allow screen control",
     "Permitir el control de pantalla",
-    "Bildschirmsteuerung erlauben"
+    "Bildschirmsteuerung erlauben",
+    "Autorizar controle da tela"
   ],
   "Autoriser les notifications": [
     "Allow notifications",
     "Permitir notificaciones",
-    "Benachrichtigungen erlauben"
+    "Benachrichtigungen erlauben",
+    "Autorizar notificações"
   ],
   "Ouvrir les réglages Android": [
     "Open Android settings",
     "Abrir los ajustes de Android",
-    "Android-Einstellungen öffnen"
+    "Android-Einstellungen öffnen",
+    "Abrir configurações do Android"
   ],
   "Démarrer la session": [
     "Start session",
     "Iniciar sesión",
-    "Sitzung starten"
+    "Sitzung starten",
+    "Iniciar sessão"
   ],
   "Arrêter": [
     "Stop",
     "Detener",
-    "Stoppen"
+    "Stoppen",
+    "Parar"
   ],
   "CONNECTÉ": [
     "CONNECTED",
     "CONECTADO",
-    "VERBUNDEN"
+    "VERBUNDEN",
+    "CONECTADO"
   ],
   "CONNEXION EN COURS": [
     "CONNECTING",
     "CONECTANDO",
-    "VERBINDUNG WIRD HERGESTELLT"
+    "VERBINDUNG WIRD HERGESTELLT",
+    "CONECTANDO"
   ],
   "SESSION ARRÊTÉE": [
     "SESSION STOPPED",
     "SESIÓN DETENIDA",
-    "SITZUNG BEENDET"
+    "SITZUNG BEENDET",
+    "SESSÃO ENCERRADA"
   ],
   "Session en cours": [
     "Session running",
     "Sesión en curso",
-    "Sitzung läuft"
+    "Sitzung läuft",
+    "Sessão em andamento"
   ],
   "Prêt à démarrer": [
     "Ready to start",
     "Listo para empezar",
-    "Bereit zum Starten"
+    "Bereit zum Starten",
+    "Pronto para iniciar"
   ],
   "Écran physique éteint": [
     "Phone display off",
     "Pantalla del teléfono apagada",
-    "Telefonbildschirm ausgeschaltet"
+    "Telefonbildschirm ausgeschaltet",
+    "Tela física desligada"
   ],
   "L’accès commence lorsque vous démarrez la session.": [
     "Access begins when you start the session.",
     "El acceso comienza al iniciar la sesión.",
-    "Der Zugriff beginnt mit dem Start der Sitzung."
+    "Der Zugriff beginnt mit dem Start der Sitzung.",
+    "O acesso começa quando você inicia a sessão."
   ],
   "Appliquer et redémarrer": [
     "Apply and restart",
     "Aplicar y reiniciar",
-    "Anwenden und neu starten"
+    "Anwenden und neu starten",
+    "Aplicar e reiniciar"
   ],
   "Vos fichiers": [
     "Your files",
     "Tus archivos",
-    "Deine Dateien"
+    "Deine Dateien",
+    "Seus arquivos"
   ],
   "Transférez et installez sans quitter vos autres apps.": [
     "Transfer and install while your other apps stay open.",
     "Transfiere e instala sin salir de otras apps.",
-    "Übertragen und installieren, während andere Apps geöffnet bleiben."
+    "Übertragen und installieren, während andere Apps geöffnet bleiben.",
+    "Transfira e instale sem sair dos outros aplicativos."
   ],
   "Téléchargements / PhoneMCP": [
     "Downloads / PhoneMCP",
     "Descargas / PhoneMCP",
+    "Downloads / PhoneMCP",
     "Downloads / PhoneMCP"
   ],
   "Lien HTTPS direct · jusqu’à 512 Mo par fichier. Une session et Shizuku actifs sont nécessaires, même pour installer une APK.": [
     "Direct HTTPS link · up to 512 MiB per file. Transfers and APK installs require an active session and Shizuku.",
     "Enlace HTTPS directo · hasta 512 MiB por archivo. Las transferencias y las APK requieren una sesión activa y Shizuku.",
-    "Direkter HTTPS-Link · bis zu 512 MiB pro Datei. Übertragungen und APK-Installationen benötigen eine aktive Sitzung und Shizuku."
+    "Direkter HTTPS-Link · bis zu 512 MiB pro Datei. Übertragungen und APK-Installationen benötigen eine aktive Sitzung und Shizuku.",
+    "Link HTTPS direto · até 512 MiB por arquivo. A transferência e a instalação exigem sessão ativa e Shizuku."
   ],
   "Ajouter un fichier": [
     "Add file",
     "Añadir archivo",
-    "Datei hinzufügen"
+    "Datei hinzufügen",
+    "Adicionar arquivo"
   ],
   "Actualiser": [
     "Refresh",
     "Actualizar",
-    "Aktualisieren"
+    "Aktualisieren",
+    "Atualizar"
   ],
   "Fichiers en pause": [
     "Transfers paused",
     "Transferencias en pausa",
-    "Übertragungen pausiert"
+    "Übertragungen pausiert",
+    "Transferências pausadas"
   ],
   "Démarrez Shizuku, autorisez Fichiers et APK, puis lancez une session.": [
     "Start Shizuku, allow Files and APKs, then start a session.",
     "Inicia Shizuku, permite Archivos y APK e inicia una sesión.",
-    "Starte Shizuku, erlaube Dateien und APKs und starte eine Sitzung."
+    "Starte Shizuku, erlaube Dateien und APKs und starte eine Sitzung.",
+    "Inicie o Shizuku, autorize arquivos e APKs e inicie uma sessão."
   ],
   "Aller à la session": [
     "Go to session",
     "Ir a la sesión",
-    "Zur Sitzung"
+    "Zur Sitzung",
+    "Ir para a sessão"
   ],
   "Opération": [
     "Operation",
     "Operación",
-    "Vorgang"
+    "Vorgang",
+    "Operação"
   ],
   "Annuler": [
     "Cancel",
     "Cancelar",
-    "Abbrechen"
+    "Abbrechen",
+    "Cancelar"
   ],
   "Les fichiers transférés apparaîtront ici.": [
     "Transferred files will appear here.",
     "Los archivos transferidos aparecerán aquí.",
-    "Übertragene Dateien werden hier angezeigt."
+    "Übertragene Dateien werden hier angezeigt.",
+    "Os arquivos transferidos aparecerão aqui."
   ],
   "Installer l’APK": [
     "Install APK",
     "Instalar APK",
-    "APK installieren"
+    "APK installieren",
+    "Instalar APK"
   ],
   "Installer cette application ?": [
     "Install this app?",
     "¿Instalar esta aplicación?",
-    "Diese App installieren?"
+    "Diese App installieren?",
+    "Instalar este aplicativo?"
   ],
   "Une version déjà installée sera mise à jour si sa signature correspond.": [
     "An installed version will be updated if its signature matches.",
     "La versión instalada se actualizará si la firma coincide.",
-    "Eine vorhandene Version wird bei übereinstimmender Signatur aktualisiert."
+    "Eine vorhandene Version wird bei übereinstimmender Signatur aktualisiert.",
+    "Uma versão instalada será atualizada se a assinatura for compatível."
   ],
   "Installer": [
     "Install",
     "Instalar",
-    "Installieren"
+    "Installieren",
+    "Instalar"
   ],
   "Lien de téléchargement": [
     "Download link",
     "Enlace de descarga",
-    "Download-Link"
+    "Download-Link",
+    "Link de download"
   ],
   "Nom du fichier": [
     "File name",
     "Nombre del archivo",
-    "Dateiname"
+    "Dateiname",
+    "Nome do arquivo"
   ],
   "SHA-256 (facultatif)": [
     "SHA-256 (optional)",
     "SHA-256 (opcional)",
-    "SHA-256 (optional)"
+    "SHA-256 (optional)",
+    "SHA-256 (opcional)"
   ],
   "64 caractères": [
     "64 characters",
     "64 caracteres",
-    "64 Zeichen"
+    "64 Zeichen",
+    "64 caracteres"
   ],
   "Télécharger": [
     "Download",
     "Descargar",
-    "Herunterladen"
+    "Herunterladen",
+    "Baixar"
   ],
   "Installation lancée": [
     "Installation started",
     "Instalación iniciada",
-    "Installation gestartet"
+    "Installation gestartet",
+    "Instalação iniciada"
   ],
   "Téléchargement lancé": [
     "Download started",
     "Descarga iniciada",
-    "Download gestartet"
+    "Download gestartet",
+    "Download iniciado"
   ],
   "Opération annulée": [
     "Operation cancelled",
     "Operación cancelada",
-    "Vorgang abgebrochen"
+    "Vorgang abgebrochen",
+    "Operação cancelada"
   ],
   "Installation terminée": [
     "Installation complete",
     "Instalación completada",
-    "Installation abgeschlossen"
+    "Installation abgeschlossen",
+    "Instalação concluída"
   ],
   "En attente": [
     "Queued",
     "En espera",
-    "In Warteschlange"
+    "In Warteschlange",
+    "Na fila"
   ],
   "Téléchargement": [
     "Downloading",
     "Descargando",
-    "Wird heruntergeladen"
+    "Wird heruntergeladen",
+    "Baixando"
   ],
   "Vérification de l’APK": [
     "Verifying APK",
     "Verificando APK",
-    "APK wird geprüft"
+    "APK wird geprüft",
+    "Verificando APK"
   ],
   "Installation par Android": [
     "Android is installing",
     "Android está instalando",
-    "Android installiert"
+    "Android installiert",
+    "Android está instalando"
   ],
   "Annulé": [
     "Cancelled",
     "Cancelado",
-    "Abgebrochen"
+    "Abgebrochen",
+    "Cancelado"
   ],
   "Interrompu": [
     "Interrupted",
     "Interrumpido",
-    "Unterbrochen"
+    "Unterbrochen",
+    "Interrompido"
   ],
   "Échec": [
     "Failed",
     "Error",
-    "Fehlgeschlagen"
+    "Fehlgeschlagen",
+    "Falhou"
   ],
   "Connexion": [
     "Connection",
     "Conexión",
-    "Verbindung"
+    "Verbindung",
+    "Conexão"
   ],
   "Aucun serveur connecté": [
     "No server connected",
     "Ningún servidor conectado",
-    "Kein Server verbunden"
+    "Kein Server verbunden",
+    "Nenhum servidor conectado"
   ],
   "Serveur MCP": [
     "MCP server",
     "Servidor MCP",
-    "MCP-Server"
+    "MCP-Server",
+    "Servidor MCP"
   ],
   "Copier l’URL MCP": [
     "Copy MCP URL",
     "Copiar URL MCP",
-    "MCP-URL kopieren"
+    "MCP-URL kopieren",
+    "Copiar URL do MCP"
   ],
   "URL copiée": [
     "URL copied",
     "URL copiada",
-    "URL kopiert"
+    "URL kopiert",
+    "URL copiada"
   ],
   "Connexion manuelle": [
     "Manual connection",
     "Conexión manual",
-    "Manuelle Verbindung"
+    "Manuelle Verbindung",
+    "Conexão manual"
   ],
   "Adresse et jeton": [
     "Address and token",
     "Dirección y token",
-    "Adresse und Token"
+    "Adresse und Token",
+    "Endereço e token"
   ],
   "Préférences": [
     "Preferences",
     "Preferencias",
-    "Voreinstellungen"
+    "Voreinstellungen",
+    "Preferências"
   ],
   "Langue": [
     "Language",
     "Idioma",
-    "Sprache"
+    "Sprache",
+    "Idioma"
   ],
   "Apparence": [
     "Appearance",
     "Apariencia",
-    "Darstellung"
+    "Darstellung",
+    "Aparência"
   ],
   "Sombre": [
     "Dark",
     "Oscura",
-    "Dunkel"
+    "Dunkel",
+    "Escura"
   ],
   "Claire": [
     "Light",
     "Clara",
-    "Hell"
+    "Hell",
+    "Clara"
   ],
   "Selon le système": [
     "System default",
     "Según el sistema",
-    "Systemeinstellung"
+    "Systemeinstellung",
+    "Padrão do sistema"
   ],
   "Accès autorisés": [
     "Permissions",
     "Permisos",
-    "Berechtigungen"
+    "Berechtigungen",
+    "Permissões"
   ],
   "Fichiers et installation d’APK": [
     "Files and APK installation",
     "Archivos e instalación de APK",
-    "Dateien und APK-Installation"
+    "Dateien und APK-Installation",
+    "Arquivos e instalação de APKs"
   ],
   "Toutes les apps par défaut": [
     "All apps by default",
     "Todas las apps por defecto",
-    "Alle Apps standardmäßig"
+    "Alle Apps standardmäßig",
+    "Todos os aplicativos por padrão"
   ],
   "Accès par application": [
     "App permissions",
     "Permisos por app",
-    "App-Berechtigungen"
+    "App-Berechtigungen",
+    "Permissões por aplicativo"
   ],
   "Lecture, actions, images et notifications": [
     "Read, actions, images and notifications",
     "Lectura, acciones, imágenes y notificaciones",
-    "Lesen, Aktionen, Bilder und Benachrichtigungen"
+    "Lesen, Aktionen, Bilder und Benachrichtigungen",
+    "Leitura, ações, capturas e notificações"
   ],
   "Contrôle de l’écran": [
     "Screen control",
     "Control de pantalla",
-    "Bildschirmsteuerung"
+    "Bildschirmsteuerung",
+    "Controle da tela"
   ],
   "Activé": [
     "Enabled",
     "Activado",
-    "Aktiviert"
+    "Aktiviert",
+    "Ativado"
   ],
   "À activer": [
     "Needs permission",
     "Requiere permiso",
-    "Berechtigung erforderlich"
+    "Berechtigung erforderlich",
+    "Precisa de permissão"
   ],
   "Accès aux notifications": [
     "Notification access",
     "Acceso a notificaciones",
-    "Benachrichtigungszugriff"
+    "Benachrichtigungszugriff",
+    "Acesso às notificações"
   ],
   "Service Shizuku": [
     "Shizuku service",
     "Servicio Shizuku",
-    "Shizuku-Dienst"
+    "Shizuku-Dienst",
+    "Serviço Shizuku"
   ],
   "Autoriser Phone MCP": [
     "Authorize Phone MCP",
     "Autorizar Phone MCP",
-    "Phone MCP autorisieren"
+    "Phone MCP autorisieren",
+    "Autorizar Phone MCP"
   ],
   "Nécessaire pour l’écran séparé et les APK": [
     "Required for the separate display and APKs",
     "Necesario para la pantalla independiente y las APK",
-    "Für den separaten Bildschirm und APKs erforderlich"
+    "Für den separaten Bildschirm und APKs erforderlich",
+    "Necessário para tela separada e APKs"
   ],
   "Shizuku est déjà autorisé.": [
     "Shizuku is already authorized.",
     "Shizuku ya está autorizado.",
-    "Shizuku ist bereits autorisiert."
+    "Shizuku ist bereits autorisiert.",
+    "Shizuku já está autorizado."
   ],
   "Ouvrez Shizuku puis réessayez.": [
     "Open Shizuku and try again.",
     "Abre Shizuku e inténtalo de nuevo.",
-    "Öffne Shizuku und versuche es erneut."
+    "Öffne Shizuku und versuche es erneut.",
+    "Abra o Shizuku e tente novamente."
   ],
   "À relancer après un redémarrage du téléphone.": [
     "Start again after restarting the phone.",
     "Vuelve a iniciarlo después de reiniciar el teléfono.",
-    "Nach einem Neustart des Telefons erneut starten."
+    "Nach einem Neustart des Telefons erneut starten.",
+    "Inicie novamente após reiniciar o telefone."
   ],
   "Mises à jour": [
     "Updates",
     "Actualizaciones",
-    "Updates"
+    "Updates",
+    "Atualizações"
   ],
   "Version installée": [
     "Installed version",
     "Versión instalada",
-    "Installierte Version"
+    "Installierte Version",
+    "Versão instalada"
   ],
   "Vérifier automatiquement": [
     "Check automatically",
     "Comprobar automáticamente",
-    "Automatisch prüfen"
+    "Automatisch prüfen",
+    "Verificar automaticamente"
   ],
   "Dernière activité": [
     "Recent activity",
     "Actividad reciente",
-    "Letzte Aktivitäten"
+    "Letzte Aktivitäten",
+    "Atividade recente"
   ],
   "Supprimer l’appairage": [
     "Remove pairing",
     "Eliminar vinculación",
-    "Kopplung entfernen"
+    "Kopplung entfernen",
+    "Remover pareamento"
   ],
   "Supprimer l’appairage ?": [
     "Remove this pairing?",
     "¿Eliminar esta vinculación?",
-    "Kopplung entfernen?"
+    "Kopplung entfernen?",
+    "Remover este pareamento?"
   ],
   "La session sera arrêtée. Un nouvel appairage sera nécessaire pour reconnecter ce téléphone.": [
     "The session will stop. Pair again to reconnect this phone.",
     "La sesión se detendrá. Tendrás que vincular de nuevo este teléfono.",
-    "Die Sitzung wird beendet. Kopple das Telefon erneut, um es wieder zu verbinden."
+    "Die Sitzung wird beendet. Kopple das Telefon erneut, um es wieder zu verbinden.",
+    "A sessão será encerrada. Será necessário parear novamente."
   ],
   "Supprimer": [
     "Delete",
     "Eliminar",
-    "Löschen"
+    "Löschen",
+    "Excluir"
   ],
   "Lien d’appairage": [
     "Pairing link",
     "Enlace de vinculación",
-    "Kopplungslink"
+    "Kopplungslink",
+    "Link de pareamento"
   ],
   "Continuer": [
     "Continue",
     "Continuar",
-    "Weiter"
+    "Weiter",
+    "Continuar"
   ],
   "Adresse du serveur": [
     "Server address",
     "Dirección del servidor",
-    "Serveradresse"
+    "Serveradresse",
+    "Endereço do servidor"
   ],
   "Jeton d’appairage": [
     "Pairing token",
     "Token de vinculación",
-    "Kopplungstoken"
+    "Kopplungstoken",
+    "Token de pareamento"
   ],
   "Saisir uniquement pour modifier la connexion": [
     "Enter only to change the connection",
     "Introduce uno solo para cambiar la conexión",
-    "Nur zum Ändern der Verbindung eingeben"
+    "Nur zum Ändern der Verbindung eingeben",
+    "Preencha apenas para alterar a conexão"
   ],
   "Enregistrer": [
     "Save",
     "Guardar",
-    "Speichern"
+    "Speichern",
+    "Salvar"
   ],
   "Connexion enregistrée. La session est arrêtée.": [
     "Connection saved. Session stopped.",
     "Conexión guardada. Sesión detenida.",
-    "Verbindung gespeichert. Sitzung beendet."
+    "Verbindung gespeichert. Sitzung beendet.",
+    "Conexão salva. Sessão encerrada."
   ],
   "Dossiers autorisés": [
     "Authorized folders",
     "Carpetas autorizadas",
-    "Freigegebene Ordner"
+    "Freigegebene Ordner",
+    "Pastas autorizadas"
   ],
   "Retirer l’accès": [
     "Remove access",
     "Retirar acceso",
-    "Zugriff entfernen"
+    "Zugriff entfernen",
+    "Remover acesso"
   ],
   "Retirer ce dossier ?": [
     "Remove this folder access?",
     "¿Retirar el acceso a esta carpeta?",
-    "Zugriff auf diesen Ordner entfernen?"
+    "Zugriff auf diesen Ordner entfernen?",
+    "Remover o acesso a esta pasta?"
   ],
   "Retirer": [
     "Remove",
     "Retirar",
-    "Entfernen"
+    "Entfernen",
+    "Remover"
   ],
   "Ajouter un dossier": [
     "Add folder",
     "Añadir carpeta",
-    "Ordner hinzufügen"
+    "Ordner hinzufügen",
+    "Adicionar pasta"
   ],
   "Partagés avec Phone MCP": [
     "Shared with Phone MCP",
     "Compartido con Phone MCP",
-    "Mit Phone MCP geteilt"
+    "Mit Phone MCP geteilt",
+    "Compartilhados com Phone MCP"
   ],
   "Utilisez Partager dans une autre app pour ajouter un texte, une image ou un fichier.": [
     "Use Share in another app to add text, an image or a file.",
     "Usa Compartir en otra app para añadir texto, una imagen o un archivo.",
-    "Nutze Teilen in einer anderen App, um Text, Bilder oder Dateien hinzuzufügen."
+    "Nutze Teilen in einer anderen App, um Text, Bilder oder Dateien hinzuzufügen.",
+    "Use Compartilhar em outro aplicativo para adicionar texto, imagem ou arquivo."
   ],
   "Vider les fichiers partagés": [
     "Clear shared inbox",
     "Vaciar archivos compartidos",
-    "Geteilte Inhalte leeren"
+    "Geteilte Inhalte leeren",
+    "Limpar caixa de compartilhamentos"
   ],
   "Contenu ajouté": [
     "Content added",
     "Contenido añadido",
-    "Inhalt hinzugefügt"
+    "Inhalt hinzugefügt",
+    "Conteúdo adicionado"
   ],
   "Recherche de mises à jour…": [
     "Checking for updates…",
     "Buscando actualizaciones…",
-    "Updates werden gesucht…"
+    "Updates werden gesucht…",
+    "Procurando atualizações…"
   ],
   "L’application est à jour.": [
     "Your app is up to date.",
     "La aplicación está actualizada.",
-    "Die App ist aktuell."
+    "Die App ist aktuell.",
+    "O aplicativo está atualizado."
   ],
   "Mise à jour disponible": [
     "Update available",
     "Actualización disponible",
-    "Update verfügbar"
+    "Update verfügbar",
+    "Atualização disponível"
   ],
   "L’installation conserve vos réglages et arrête la session. Rouvrez ensuite Phone MCP pour reprendre.": [
     "Installation keeps your settings and stops the session. Reopen Phone MCP to resume.",
     "La instalación conserva los ajustes y detiene la sesión. Abre Phone MCP después para continuar.",
-    "Die Installation behält die Einstellungen und beendet die Sitzung. Öffne Phone MCP danach erneut."
+    "Die Installation behält die Einstellungen und beendet die Sitzung. Öffne Phone MCP danach erneut.",
+    "A instalação mantém as configurações e encerra a sessão. Abra o Phone MCP novamente para retomar."
   ],
   "Plus tard": [
     "Later",
     "Más tarde",
-    "Später"
+    "Später",
+    "Mais tarde"
   ],
   "Téléchargement de la mise à jour…": [
     "Downloading update…",
     "Descargando actualización…",
-    "Update wird heruntergeladen…"
+    "Update wird heruntergeladen…",
+    "Baixando atualização…"
   ],
   "Installation remise à Android.": [
     "Installation handed to Android.",
     "Instalación enviada a Android.",
-    "Installation an Android übergeben."
+    "Installation an Android übergeben.",
+    "Instalação encaminhada ao Android."
   ],
   "Rechercher une application": [
     "Find an app",
     "Buscar una app",
-    "App suchen"
+    "App suchen",
+    "Buscar aplicativo"
   ],
   "Nom ou identifiant": [
     "Name or package",
     "Nombre o identificador",
-    "Name oder Paketname"
+    "Name oder Paketname",
+    "Nome ou pacote"
   ],
   "Lecture": [
     "Read",
     "Lectura",
-    "Lesen"
+    "Lesen",
+    "Leitura"
   ],
   "Actions": [
     "Actions",
     "Acciones",
-    "Aktionen"
+    "Aktionen",
+    "Ações"
   ],
   "Captures": [
     "Screenshots",
     "Capturas",
-    "Bildschirmfotos"
+    "Bildschirmfotos",
+    "Capturas de tela"
   ],
   "Accès mis à jour": [
     "Permissions updated",
     "Permisos actualizados",
-    "Berechtigungen aktualisiert"
+    "Berechtigungen aktualisiert",
+    "Permissões atualizadas"
   ],
   "Fermer": [
     "Close",
     "Cerrar",
-    "Schließen"
+    "Schließen",
+    "Fechar"
   ],
   "Démarrez et autorisez Shizuku dans Réglages.": [
     "Start and authorize Shizuku in Settings.",
     "Inicia y autoriza Shizuku en Ajustes.",
-    "Starte und autorisiere Shizuku in den Einstellungen."
+    "Starte und autorisiere Shizuku in den Einstellungen.",
+    "Inicie e autorize o Shizuku nas configurações."
   ],
   "Activez l’accès à l’écran dans Réglages.": [
     "Enable screen access in Settings.",
     "Activa el acceso a pantalla en Ajustes.",
-    "Aktiviere den Bildschirmzugriff in den Einstellungen."
+    "Aktiviere den Bildschirmzugriff in den Einstellungen.",
+    "Ative o acesso à tela nas configurações."
   ],
   "Activez l’accès aux notifications dans Réglages.": [
     "Enable notification access in Settings.",
     "Activa el acceso a notificaciones en Ajustes.",
-    "Aktiviere den Benachrichtigungszugriff in den Einstellungen."
+    "Aktiviere den Benachrichtigungszugriff in den Einstellungen.",
+    "Ative o acesso às notificações nas configurações."
   ],
   "Appairez le serveur dans Réglages.": [
     "Pair the server in Settings.",
     "Vincula el servidor en Ajustes.",
-    "Kopple den Server in den Einstellungen."
+    "Kopple den Server in den Einstellungen.",
+    "Pareie o servidor nas configurações."
   ],
   "Réenregistrez l’appairage.": [
     "Save the pairing again.",
     "Guarda la vinculación de nuevo.",
-    "Speichere die Kopplung erneut."
+    "Speichere die Kopplung erneut.",
+    "Salve o pareamento novamente."
   ],
   "Autorisez les notifications puis démarrez la session.": [
     "Allow notifications, then start the session.",
     "Permite las notificaciones e inicia la sesión.",
-    "Erlaube Benachrichtigungen und starte die Sitzung."
+    "Erlaube Benachrichtigungen und starte die Sitzung.",
+    "Autorize as notificações e inicie a sessão."
   ],
   "Sans expiration automatique": [
     "Without automatic expiry",
     "Sin caducidad automática",
-    "Ohne automatischen Ablauf"
+    "Ohne automatischen Ablauf",
+    "Sem expiração automática"
   ],
   "Pendant ": [
     "For ",
     "Durante ",
-    "Für "
+    "Für ",
+    "Durante "
   ],
   " minutes": [
     " minutes",
     " minutos",
-    " Minuten"
+    " Minuten",
+    " minutos"
   ],
   ", l’IA pourra ": [
     ", AI can ",
     ", la IA puede ",
-    " kann die KI "
+    " kann die KI ",
+    ", a IA poderá "
   ],
   "contrôler les apps autorisées sur un écran séparé": [
     "control authorized apps on a separate display",
     "controlar apps autorizadas en una pantalla independiente",
-    "freigegebene Apps auf einem separaten Bildschirm steuern"
+    "freigegebene Apps auf einem separaten Bildschirm steuern",
+    "controlar os aplicativos autorizados em uma tela separada"
   ],
   "contrôler les apps autorisées sur votre écran": [
     "control authorized apps on your screen",
     "controlar apps autorizadas en tu pantalla",
-    "freigegebene Apps auf deinem Bildschirm steuern"
+    "freigegebene Apps auf deinem Bildschirm steuern",
+    "controlar os aplicativos autorizados na sua tela"
   ],
   "lire et utiliser les notifications autorisées": [
     "read and use authorized notifications",
     "leer y usar notificaciones autorizadas",
-    "freigegebene Benachrichtigungen lesen und verwenden"
+    "freigegebene Benachrichtigungen lesen und verwenden",
+    "ler e usar as notificações autorizadas"
   ],
   ", transférer des fichiers et installer des APK via Shizuku": [
     ", transfer files and install APKs through Shizuku",
     ", transferir archivos e instalar APK mediante Shizuku",
-    ", Dateien übertragen und APKs über Shizuku installieren"
+    ", Dateien übertragen und APKs über Shizuku installieren",
+    ", transferir arquivos e instalar APKs via Shizuku"
   ],
   " L’écran séparé pourra rester contrôlable même si votre écran est verrouillé.": [
     " The separate display may remain controllable while your phone is locked.",
     " La pantalla independiente puede seguir controlándose con el teléfono bloqueado.",
-    " Der separate Bildschirm kann auch bei gesperrtem Telefon steuerbar bleiben."
+    " Der separate Bildschirm kann auch bei gesperrtem Telefon steuerbar bleiben.",
+    " A tela separada poderá permanecer controlável mesmo com a tela bloqueada."
   ],
   " L’écran physique sera éteint au démarrage.": [
     " Your phone display will turn off when starting.",
     " La pantalla física se apagará al iniciar.",
-    " Der Telefonbildschirm wird beim Start ausgeschaltet."
+    " Der Telefonbildschirm wird beim Start ausgeschaltet.",
+    " A tela física será desligada ao iniciar."
   ],
   "\nVous pouvez arrêter à tout moment depuis la notification. La session ne reprend pas après un redémarrage.": [
     "\nStop at any time from the notification. The session does not resume after a reboot.",
     "\nPuedes detenerla desde la notificación. La sesión no se reanuda después de reiniciar.",
-    "\nDu kannst die Sitzung jederzeit über die Benachrichtigung beenden. Nach einem Neustart wird sie nicht fortgesetzt."
+    "\nDu kannst die Sitzung jederzeit über die Benachrichtigung beenden. Nach einem Neustart wird sie nicht fortgesetzt.",
+    "\nVocê pode parar a qualquer momento pela notificação. A sessão não é retomada após reiniciar o telefone."
   ],
   "Démarrer cette session ?": [
     "Start this session?",
     "¿Iniciar esta sesión?",
-    "Diese Sitzung starten?"
+    "Diese Sitzung starten?",
+    "Iniciar esta sessão?"
   ],
   "Démarrer": [
     "Start",
     "Iniciar",
-    "Starten"
+    "Starten",
+    "Iniciar"
   ],
   "Lien d’appairage invalide.": [
     "Invalid pairing link.",
     "Enlace de vinculación no válido.",
-    "Ungültiger Kopplungslink."
+    "Ungültiger Kopplungslink.",
+    "Link de pareamento inválido."
   ],
   "Connecter ce serveur ?": [
     "Connect this server?",
     "¿Conectar este servidor?",
-    "Mit diesem Server verbinden?"
+    "Mit diesem Server verbinden?",
+    "Conectar este servidor?"
   ],
   "\nLa connexion ne démarre aucune session.": [
     "\nConnecting does not start a session.",
     "\nLa conexión no inicia una sesión.",
-    "\nDie Verbindung startet keine Sitzung."
+    "\nDie Verbindung startet keine Sitzung.",
+    "\nA conexão não inicia nenhuma sessão."
   ],
   "Appairer": [
     "Pair",
     "Vincular",
-    "Koppeln"
+    "Koppeln",
+    "Parear"
   ],
   "Code expiré ou déjà utilisé. Régénérez l’appairage.": [
     "Code expired or already used. Generate a new pairing link.",
     "El código caducó o ya se usó. Genera un nuevo enlace.",
-    "Code abgelaufen oder bereits verwendet. Erstelle einen neuen Kopplungslink."
+    "Code abgelaufen oder bereits verwendet. Erstelle einen neuen Kopplungslink.",
+    "Código expirado ou já utilizado. Gere um novo link de pareamento."
   ],
   "Le serveur d’appairage a changé.": [
     "Pairing server changed.",
     "El servidor de vinculación cambió.",
-    "Der Kopplungsserver hat sich geändert."
+    "Der Kopplungsserver hat sich geändert.",
+    "O servidor de pareamento mudou."
   ],
   "Serveur appairé": [
     "Server paired",
     "Servidor vinculado",
-    "Server gekoppelt"
+    "Server gekoppelt",
+    "Servidor pareado"
   ],
   "Appairage impossible": [
     "Pairing failed",
     "No se pudo vincular",
-    "Kopplung fehlgeschlagen"
+    "Kopplung fehlgeschlagen",
+    "Falha no pareamento"
   ],
   "Opération impossible": [
     "Operation unavailable",
     "Operación no disponible",
-    "Vorgang nicht verfügbar"
+    "Vorgang nicht verfügbar",
+    "Operação indisponível"
   ],
   "Shizuku autorisé": [
     "Shizuku authorized",
     "Shizuku autorizado",
-    "Shizuku autorisiert"
+    "Shizuku autorisiert",
+    "Shizuku autorizado"
   ],
   "Autorisation Shizuku refusée": [
     "Shizuku permission denied",
     "Permiso Shizuku denegado",
-    "Shizuku-Berechtigung verweigert"
+    "Shizuku-Berechtigung verweigert",
+    "Permissão do Shizuku negada"
   ],
   "Shizuku arrêté ou absent": [
     "Shizuku stopped or not installed",
     "Shizuku detenido o no instalado",
-    "Shizuku beendet oder nicht installiert"
+    "Shizuku beendet oder nicht installiert",
+    "Shizuku parado ou não instalado"
   ],
   "Démarrez Shizuku avec le débogage sans fil, sans root": [
     "Start Shizuku using wireless debugging, without root",
     "Inicia Shizuku con depuración inalámbrica, sin root",
-    "Starte Shizuku über drahtloses Debugging, ohne Root"
+    "Starte Shizuku über drahtloses Debugging, ohne Root",
+    "Inicie o Shizuku com depuração sem fio, sem root"
   ],
   "Autorisation Phone MCP à accorder dans Shizuku": [
     "Authorize Phone MCP in Shizuku",
     "Autoriza Phone MCP en Shizuku",
-    "Phone MCP in Shizuku autorisieren"
+    "Phone MCP in Shizuku autorisieren",
+    "Autorize o Phone MCP no Shizuku"
   ],
   "Shizuku indisponible": [
     "Shizuku unavailable",
     "Shizuku no disponible",
-    "Shizuku nicht verfügbar"
+    "Shizuku nicht verfügbar",
+    "Shizuku indisponível"
   ],
   "%.1f Ko": [
+    "%.1f KB",
     "%.1f KB",
     "%.1f KB",
     "%.1f KB"
@@ -852,9 +1022,11 @@
   "%.1f Mo": [
     "%.1f MiB",
     "%.1f MiB",
+    "%.1f MiB",
     "%.1f MiB"
   ],
   " o": [
+    " B",
     " B",
     " B",
     " B"
@@ -862,71 +1034,85 @@
   " · version ": [
     " · version ",
     " · versión ",
-    " · Version "
+    " · Version ",
+    " · versão "
   ],
   "\nVersion ": [
     "\nVersion ",
     "\nVersión ",
-    "\nVersion "
+    "\nVersion ",
+    "\nVersão "
   ],
   "\nUne version déjà installée sera mise à jour si sa signature correspond.": [
     "\nAn installed version will be updated if its signature matches.",
     "\nLa versión instalada se actualizará si la firma coincide.",
-    "\nEine vorhandene Version wird bei übereinstimmender Signatur aktualisiert."
+    "\nEine vorhandene Version wird bei übereinstimmender Signatur aktualisiert.",
+    "\nUma versão instalada será atualizada se a assinatura for compatível."
   ],
   "Recevez les fichiers envoyés depuis le chat ou le PC, jusqu’à 512 Mo. Une session et Shizuku actifs sont nécessaires.": [
     "Receive files sent from chat or your PC, up to 512 MB. An active session and Shizuku are required.",
     "Recibe archivos enviados desde el chat o el PC, hasta 512 MB. Se requieren una sesión y Shizuku activos.",
-    "Empfange Dateien aus dem Chat oder vom PC, bis zu 512 MB. Eine aktive Sitzung und Shizuku sind erforderlich."
+    "Empfange Dateien aus dem Chat oder vom PC, bis zu 512 MB. Eine aktive Sitzung und Shizuku sind erforderlich.",
+    "Receba arquivos enviados pelo chat ou computador, até 512 MB. É necessária uma sessão ativa com Shizuku."
   ],
   "Télécharger par lien": [
     "Download from link",
     "Descargar desde enlace",
-    "Über Link herunterladen"
+    "Über Link herunterladen",
+    "Baixar por link"
   ],
   "Réception du fichier": [
     "Receiving file",
     "Recibiendo archivo",
-    "Datei wird empfangen"
+    "Datei wird empfangen",
+    "Recebendo arquivo"
   ],
   "Vérification du fichier": [
     "Verifying file",
     "Verificando archivo",
-    "Datei wird geprüft"
+    "Datei wird geprüft",
+    "Verificando arquivo"
   ],
   "Écran pendant le contrôle": [
     "Screen during control",
     "Pantalla durante el control",
-    "Bildschirm während der Steuerung"
+    "Bildschirm während der Steuerung",
+    "Tela durante o controle"
   ],
   "Maintenir l’écran physique allumé": [
     "Keep the physical screen on",
     "Mantener encendida la pantalla física",
-    "Physischen Bildschirm eingeschaltet lassen"
+    "Physischen Bildschirm eingeschaltet lassen",
+    "Manter a tela física ligada"
   ],
   "Allume et maintient l’écran allumé tant qu’une app est contrôlée. Désactivé, l’IA ne peut pas l’imposer.": [
     "Turns on and keeps the screen on while an app is controlled. When disabled, AI cannot force it on.",
     "Enciende y mantiene la pantalla encendida mientras se controla una app. Si está desactivado, la IA no puede imponerlo.",
-    "Schaltet den Bildschirm ein und hält ihn an, solange eine App gesteuert wird. Ist dies deaktiviert, kann die KI es nicht erzwingen."
+    "Schaltet den Bildschirm ein und hält ihn an, solange eine App gesteuert wird. Ist dies deaktiviert, kann die KI es nicht erzwingen.",
+    "Liga e mantém a tela ligada enquanto um aplicativo é controlado. Quando desativado, a IA não pode forçar isso."
   ],
   "Réglage enregistré. Relancez la session pour l’appliquer.": [
     "Setting saved. Restart the session to apply it.",
     "Ajuste guardado. Reinicia la sesión para aplicarlo.",
-    "Einstellung gespeichert. Starte die Sitzung neu, um sie anzuwenden."
+    "Einstellung gespeichert. Starte die Sitzung neu, um sie anzuwenden.",
+    "Configuração salva. Reinicie a sessão para aplicar."
   ],
   "Éteindre l’écran au démarrage": [
     "Turn off the screen at session start",
     "Apagar la pantalla al iniciar la sesión",
-    "Bildschirm beim Sitzungsstart ausschalten"
+    "Bildschirm beim Sitzungsstart ausschalten",
+    "Desligar a tela ao iniciar a sessão"
   ],
   "Écran maintenu allumé": [
     "Screen kept on",
     "Pantalla mantenida encendida",
-    "Bildschirm wird eingeschaltet gehalten"
+    "Bildschirm wird eingeschaltet gehalten",
+    "Tela mantida ligada"
   ],
   " L’écran physique sera maintenu allumé tant qu’une app est contrôlée.": [
     " The physical screen will stay on while any app is controlled.",
     " La pantalla física permanecerá encendida mientras se controle alguna app.",
-    " Der physische Bildschirm bleibt eingeschaltet, solange eine App gesteuert wird."
+    " Der physische Bildschirm bleibt eingeschaltet, solange eine App gesteuert wird.",
+    " A tela física permanecerá ligada enquanto um aplicativo estiver sendo controlado."
   ]
 }
