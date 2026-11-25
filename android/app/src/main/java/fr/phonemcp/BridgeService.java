@@ -48,6 +48,9 @@ public final class BridgeService extends Service {
     private final java.util.concurrent.ExecutorService documents=java.util.concurrent.Executors.newSingleThreadExecutor();
     public static boolean active() { return SessionPolicy.active(instance != null,SystemClock.elapsedRealtime(),sessionEnd); }
     public static boolean connected(){return active()&&connection.startsWith("Connecté");}
+    private static final class ForegroundTicket{final BridgeService service;final int epoch,wire;ForegroundTicket(BridgeService s){service=s;epoch=s.epoch;wire=s.wireEpoch;}}
+    static Object foregroundTicket(){BridgeService s=instance;return s!=null&&connected()&&screenControlEnabled()&&!parallelEnabled()?new ForegroundTicket(s):null;}
+    static boolean foregroundTicketValid(Object value){if(!(value instanceof ForegroundTicket))return false;ForegroundTicket t=(ForegroundTicket)value;return instance==t.service&&connected()&&screenControlEnabled()&&!parallelEnabled()&&t.epoch==t.service.epoch&&t.wire==t.service.wireEpoch;}
     @Override protected void attachBaseContext(Context context){super.attachBaseContext(Locales.wrap(context));}
     private PreviewMedia previewMedia;
     static boolean recordingPreview(String id){BridgeService s=instance;return s!=null&&s.previewMedia!=null&&s.previewMedia.recording(id);}

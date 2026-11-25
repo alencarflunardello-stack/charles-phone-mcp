@@ -148,7 +148,9 @@ public final class PhoneAccessibilityService extends AccessibilityService {
             if (!BridgeService.active()) throw new IllegalStateException("Session arrêtée");
             if ("status".equals(op)) { reply.done(statusResult(this),null); return; }
             if ("stop".equals(op)) { reply.done(new JSONObject().put("stopped",true),null); main.postDelayed(() -> BridgeService.stop(this),150); return; }
+            if(foregroundBatchRunning)throw new IllegalStateException("A foreground sequence is already running; use local Stop to interrupt.");
             String pkg = args.getString("packageName");
+            if("action_sequence".equals(op)){foregroundSequence(pkg,args,reply);return;}
             if("open_url".equals(op)){
                 checkPermission(pkg,"write");Intent launch=new Intent(Intent.ACTION_VIEW,android.net.Uri.parse(FilePolicy.url(args.getString("url")))).setPackage(pkg).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 if(getPackageManager().resolveActivity(launch,0)==null)throw new IllegalStateException("Cette app ne peut pas ouvrir ce lien.");clearSnapshot();startActivity(launch);reply.done(new JSONObject().put("requested",true),null);return;
@@ -229,6 +231,82 @@ public final class PhoneAccessibilityService extends AccessibilityService {
             } finally { if(actionAttempted)clearSnapshot();root.recycle(); }
         } catch (Exception error) { reply.done(null,error.getMessage() == null ? "Commande refusée" : error.getMessage()); }
     }
+
+    // Foreground batches remain on the already observed native controls.
+    // No shell/input injection, no canvas coordinates, no background execution.
+    private boolean foregroundBatchRunning;
+    private List<ForegroundTapPolicy.Target> nativeTapTargets(){
+        List<ForegroundTapPolicy.Target> out=new ArrayList<>();
+        for(Map.Entry<String,AccessibilityNodeInfo> entry:nodes.entrySet()){
+            AccessibilityNodeInfo n=entry.getValue();
+            String klass=String.valueOf(n.getClassName());
+            if(!("android.widget.Button".equals(klass)||"android.widget.ImageButton".equals(klass)))continue;
+            if(!n.isVisibleToUser()||!n.isEnabled()||!n.isClickable()||n.isEditable()||n.isPassword()||NodeIdentity.protectedAncestor(n)||n.getViewIdResourceName()==null)continue;
+            Rect b=new Rect();n.getBoundsInScreen(b);
+            if(!b.isEmpty())out.add(new ForegroundTapPolicy.Target(entry.getKey(),identities.get(entry.getKey()),b.left,b.top,b.right,b.bottom));
+        }
+        return out;
+    }
+    private void foregroundSequence(String pkg,JSONObject args,Reply reply)throws Exception{
+        checkPermission(pkg,"write");
+        if(args.has("sessionId")&&!args.isNull("sessionId"))throw new IllegalArgumentException("Foreground does not use an isolated sessionId.");
+        final int window=snapshotWindow;
+        if(snapshotId==null||!snapshotId.equals(args.getString("snapshotId"))||!pkg.equals(snapshotPackage)||SystemClock.elapsedRealtime()-snapshotTime>30000)throw new IllegalStateException("Read a fresh foreground snapshot first.");
+        JSONArray steps=args.getJSONArray("steps");int interval=args.optInt("intervalMs",0),timeout=args.optInt("timeoutMs",4000);
+        if(!ForegroundTapPolicy.bounds(steps.length(),interval,timeout))throw new IllegalArgumentException("Invalid foreground sequence bounds.");
+        if(args.optLong("_expiresAt",0)<=System.currentTimeMillis())throw new SecurityException("Command expired.");
+        final Object ticket=BridgeService.foregroundTicket();
+        if(ticket==null)throw new SecurityException("Foreground transport is not active.");
+        final long deadline=SystemClock.elapsedRealtime()+timeout;
+        final List<ForegroundTapPolicy.Target> targets=new ArrayList<>();
+        final List<ForegroundTapPolicy.Target> observed=nativeTapTargets();
+        final int[] xs=new int[steps.length()],ys=new int[steps.length()];
+        for(int i=0;i<steps.length();i++){
+            JSONObject s=steps.getJSONObject(i);
+            if(!"tap".equals(s.getString("op")))throw new IllegalArgumentException("Foreground sequences currently support only native button taps; use an individual swipe.");
+            xs[i]=s.getInt("x");ys[i]=s.getInt("y");
+            targets.add(ForegroundTapPolicy.unique(observed,xs[i],ys[i]));
+        }
+        foregroundBatchRunning=true;
+        final class Batch implements Runnable{
+            int done;
+            void finish(String reason,boolean uncertain){
+                foregroundBatchRunning=false;clearSnapshot();
+                try{reply.done(new JSONObject().put("completed",done==targets.size()&&!uncertain).put("executedCount",done).put("failedStep",done==targets.size()?JSONObject.NULL:done).put("uncertain",uncertain).put("reason",reason).put("displayId",0).put("replayed",false).put("nativeButtonsOnly",true),null);}
+                catch(JSONException error){reply.done(null,"Foreground sequence result unavailable; read before acting.");}
+            }
+            public void run(){
+                boolean attempted=false;
+                AccessibilityNodeInfo root=null,active=null;
+                try{
+                    if(instance!=PhoneAccessibilityService.this||!BridgeService.foregroundTicketValid(ticket)||SystemClock.elapsedRealtime()>=deadline||args.optLong("_expiresAt",0)<=System.currentTimeMillis())throw new SecurityException("Foreground sequence stopped or expired.");
+                    checkPermission(pkg,"write");
+                    // Fresh observation on the same window before every action, including the first.
+                    snapshot(pkg,new JSONObject().put("windowId",window));
+                    root=guard(pkg,"write",window);
+                    active=getRootInActiveWindow();
+                    if(active==null||active.getWindowId()!=window||!pkg.contentEquals(active.getPackageName()==null?"":active.getPackageName())||containsPassword(root,new int[]{0},0))throw new SecurityException("Active window changed or protected content present.");
+                    ForegroundTapPolicy.Target before=targets.get(done),after=ForegroundTapPolicy.unique(nativeTapTargets(),xs[done],ys[done]);
+                    if(!before.same(after))throw new SecurityException("Observed target changed; sequence stopped.");
+                    AccessibilityNodeInfo n=nodes.get(after.id);
+                    Rect bounds=new Rect();
+                    if(n==null||!n.refresh()||!n.isVisibleToUser()||!n.isEnabled()||!n.isClickable()||n.isPassword()||NodeIdentity.protectedAncestor(n)||n.getWindowId()!=window||!pkg.contentEquals(n.getPackageName()==null?"":n.getPackageName())||!after.identity.equals(NodeIdentity.of(n)))throw new SecurityException("Native target no longer valid.");
+                    n.getBoundsInScreen(bounds);
+                    if(bounds.left!=after.left||bounds.top!=after.top||bounds.right!=after.right||bounds.bottom!=after.bottom)throw new SecurityException("Native target moved.");
+                    checkGestureOverlays(window,xs[done],ys[done],xs[done],ys[done]);
+                    if(!BridgeService.foregroundTicketValid(ticket)||SystemClock.elapsedRealtime()>=deadline||args.optLong("_expiresAt",0)<=System.currentTimeMillis())throw new SecurityException("Sequence ended before action.");
+                    attempted=true;
+                    if(!n.performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new IllegalStateException("Android did not confirm native click.");
+                    done++;clearSnapshot();
+                    if(done==targets.size()){finish("",false);return;}
+                    main.postDelayed(this,Math.max(100,interval));
+                }catch(Exception error){finish(error.getMessage()==null?"Foreground sequence stopped":error.getMessage(),attempted);}
+                finally{if(root!=null)root.recycle();if(active!=null)active.recycle();}
+            }
+        }
+        new Batch().run();
+    }
+
     private void checkGestureOverlays(int target,int x,int y,int toX,int toY){
         List<AccessibilityWindowInfo> windows=getWindows();int layer=Integer.MIN_VALUE;
         try{

@@ -33,10 +33,10 @@ def inspect(root):
         "cleartext_disabled": 'android:usesCleartextTraffic="false"' in manifest,
     }
 
-def validate(data, expected_version, expected_code, device_api, package):
+def validate(data, expected_version, expected_code, device_api, package, android_version=None):
     errors = []
     for field in ("root", "server", "lock", "lock_root", "runtime", "android"):
-        if data.get(field) != expected_version:
+        if data.get(field) != (android_version if field == "android" and android_version else expected_version):
             errors.append(field + ": version mismatch")
     if data.get("version_code") != str(expected_code):
         errors.append("version code mismatch")
@@ -73,7 +73,8 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--root", type=Path, default=Path("."))
     p.add_argument("--version", default="0.19.1")
-    p.add_argument("--version-code", type=int, default=70)
+    p.add_argument("--android-version", default="0.19.1-tablet.1")
+    p.add_argument("--version-code", type=int, default=71)
     p.add_argument("--device-api", type=int, default=33)
     p.add_argument("--package", default="br.charles.phonemcp")
     p.add_argument("--self-test", action="store_true")
@@ -83,7 +84,7 @@ def main():
         return 0
     try:
         data = inspect(a.root)
-        errors = validate(data, a.version, a.version_code, a.device_api, a.package)
+        errors = validate(data, a.version, a.version_code, a.device_api, a.package, a.android_version)
         print(json.dumps({"source_gate_passed":not errors,"observed":data,"errors":errors,"real_apk_verified":False}))
         return int(bool(errors))
     except (OSError, ValueError, TypeError, KeyError) as e:

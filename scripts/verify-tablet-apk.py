@@ -24,8 +24,8 @@ def main():
     p.add_argument("--aapt", required=True)
     p.add_argument("--apksigner", required=True)
     p.add_argument("--package", default="br.charles.phonemcp")
-    p.add_argument("--version", default="0.19.1")
-    p.add_argument("--version-code", type=int, default=70)
+    p.add_argument("--version", default="0.19.1-tablet.1")
+    p.add_argument("--version-code", type=int, default=71)
     p.add_argument("--device-api", type=int, default=33)
     a = p.parse_args()
     try:
