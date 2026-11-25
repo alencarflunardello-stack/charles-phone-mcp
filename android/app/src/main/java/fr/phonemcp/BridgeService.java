@@ -125,6 +125,11 @@ public final class BridgeService extends Service {
             return START_NOT_STICKY;
         }
         if (intent == null) { stopSelf(); return START_NOT_STICKY; }
+        if(!FeatureCompatibility.canStart(intent.getBooleanExtra("parallel",false),Build.VERSION.SDK_INT)){
+            Audit.add("parallel SDK incompatible",false);
+            android.widget.Toast.makeText(this,I18n.tr(this,"Le moteur d’écran séparé actuel nécessite Android 14 ou plus."),android.widget.Toast.LENGTH_LONG).show();
+            stop(this);return START_NOT_STICKY;
+        }
         int minutes = intent.getIntExtra("minutes",30);
         try{sessionEnd=SessionPolicy.deadline(SystemClock.elapsedRealtime(),minutes);}
         catch(IllegalArgumentException|ArithmeticException error){Audit.add("durée de session",false);stop(this);return START_NOT_STICKY;}

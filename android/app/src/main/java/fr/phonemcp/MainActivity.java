@@ -108,7 +108,7 @@ public final class MainActivity extends Activity {
         set(sessionDetail,active?t(current)+(screenHeld?" · "+t("Écran maintenu allumé"):state.optBoolean("physicalPanelOff")?" · "+t("Écran physique éteint"):""):t("L’accès commence lorsque vous démarrez la session."));
         if(start!=null){start.setText(t(active?t("Appliquer et redémarrer"):t("Démarrer la session")));stop.setVisibility(active?View.VISIBLE:View.GONE);}
         if(restore!=null)restore.setVisibility(active&&BridgeService.parallelEnabled()?View.VISIBLE:View.GONE);
-        set(requirements,state.optString("error"));
+        set(requirements,mode==0&&!FeatureCompatibility.canStart(true,Build.VERSION.SDK_INT)?t("Le moteur d’écran séparé actuel nécessite Android 14 ou plus."):state.optString("error"));
         updateAgents(state);
     }
 
@@ -209,6 +209,7 @@ public final class MainActivity extends Activity {
     }
     private void startSession(){
         boolean parallel=mode==0,screen=mode==1;
+        if(!FeatureCompatibility.canStart(parallel,Build.VERSION.SDK_INT)){toast("Le moteur d’écran séparé actuel nécessite Android 14 ou plus.");return;}
         if(parallel&&!BackgroundClient.permitted()){toast("Démarrez et autorisez Shizuku dans Réglages.");return;}
         if(screen&&PhoneAccessibilityService.instance==null){toast("Activez l’accès à l’écran dans Réglages.");return;}
         if(mode==2&&PhoneNotificationService.instance==null){toast("Activez l’accès aux notifications dans Réglages.");return;}

@@ -1114,5 +1114,11 @@
     " La pantalla física permanecerá encendida mientras se controle alguna app.",
     " Der physische Bildschirm bleibt eingeschaltet, solange eine App gesteuert wird.",
     " A tela física permanecerá ligada enquanto um aplicativo estiver sendo controlado."
+  ],
+  "Le moteur d’écran séparé actuel nécessite Android 14 ou plus.": [
+    "The current separate-screen engine requires Android 14 or later.",
+    "El motor actual de pantalla separada requiere Android 14 o posterior.",
+    "Die aktuelle Engine für getrennte Bildschirme erfordert Android 14 oder neuer.",
+    "O mecanismo atual de tela separada exige Android 14 ou superior."
   ]
 }
