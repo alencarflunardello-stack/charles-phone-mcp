@@ -28,6 +28,7 @@ def inspect(root):
         "min_sdk": field(gradle, "minSdk"),
         "package": field(gradle, "applicationId"),
         "debug_signing": bool(re.search(r"signingConfig\s+signingConfigs\.debug\b", gradle)),
+        "owner_signing_config": ("signingConfig signingConfigs.tabletRelease" in gradle and "CHARLES_RELEASE_KEYSTORE" in gradle and "Release signing is not configured" in gradle),
         "microphone_permission": "android.permission.RECORD_AUDIO" in manifest,
         "cleartext_disabled": 'android:usesCleartextTraffic="false"' in manifest,
     }
@@ -48,6 +49,8 @@ def validate(data, expected_version, expected_code, device_api, package):
         errors.append("package mismatch")
     if data.get("debug_signing") is not False:
         errors.append("debug signing or unknown signing configuration")
+    if data.get("owner_signing_config") is not True:
+        errors.append("owner release signing configuration missing")
     if data.get("microphone_permission") is not False:
         errors.append("microphone permission present or unknown")
     if data.get("cleartext_disabled") is not True:
@@ -56,10 +59,10 @@ def validate(data, expected_version, expected_code, device_api, package):
 
 def self_test():
     good = dict.fromkeys(("root", "server", "lock", "lock_root", "runtime", "android"), "0.19.1")
-    good.update(version_code="70", min_sdk="30", package="br.charles.phonemcp", debug_signing=False, microphone_permission=False, cleartext_disabled=True)
+    good.update(version_code="70", min_sdk="30", package="br.charles.phonemcp", debug_signing=False, owner_signing_config=True, microphone_permission=False, cleartext_disabled=True)
     tests = [({}, True)]
     tests += [({k: "bad"}, False) for k in ("root","server","lock","lock_root","runtime","android","version_code","min_sdk","package")]
-    tests += [({"min_sdk":"34"},False),({"debug_signing":True},False),({"microphone_permission":True},False),({"cleartext_disabled":False},False),({"debug_signing":None},False)]
+    tests += [({"min_sdk":"34"},False),({"debug_signing":True},False),({"microphone_permission":True},False),({"cleartext_disabled":False},False),({"debug_signing":None},False),({"owner_signing_config":False},False)]
     for change, expected in tests:
         actual = not validate({**good, **change}, "0.19.1", 70, 33, "br.charles.phonemcp")
         if actual != expected:
