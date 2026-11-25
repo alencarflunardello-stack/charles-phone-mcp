@@ -78,7 +78,8 @@ test('cloud OAuth binds PKCE, callback and resource, then consumes the code',asy
 });
 
 test('cloud official MCP client discovers tools and reports the actual offline phone',async t=>{
- const tokens=await grant(),client=await clientFor(t,tokens.access_token);const {tools}=await client.listTools();assert.equal(tools.length,66);
+ const tokens=await grant(),client=await clientFor(t,tokens.access_token);const {tools}=await client.listTools();assert.equal(tools.length,71);assert.equal(new Set(tools.map(tool=>tool.name)).size,71);
+ for(const name of ['phone_parallel_batch','phone_chrome_tabs','phone_journal_read','phone_journal_write','phone_hover'])assert.ok(tools.some(tool=>tool.name===name),`Missing candidate tool: ${name}`);
  const r=await client.callTool({name:'phone_connection',arguments:{}});assert.equal(JSON.parse(r.content[0].text).connected,false);assert.equal(r.structuredContent.connected,false);assert.deepEqual(r.structuredContent,JSON.parse(r.content[0].text));
  assert.deepEqual(r.structuredContent.tooling.tools,tools.map(tool=>tool.name));
  assert.equal(r.structuredContent.tooling.serverVersion,r.structuredContent.serverVersion);
