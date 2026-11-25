@@ -1,0 +1,41 @@
+name: Tablet release preflight (no distribution)
+on:
+  push:
+    branches: [charles-tablet-release]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: tablet-preflight-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Test release metadata checker
+        run: |
+          python3 -m py_compile scripts/check-tablet-release.py
+          python3 scripts/check-tablet-release.py --self-test
+      - name: Prepare existing isolated Android identity
+        run: python3 scripts/prepare-charles-pilot.py
+      - name: Verify consistent release source metadata
+        run: python3 scripts/check-tablet-release.py --root . --device-api 33
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22'
+      - name: Test server
+        run: |
+          npm ci --prefix server
+          npm test --prefix server
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd
+      - name: Install Android SDK
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - name: Android lint only (no signed artifact)
+        working-directory: android
+        run: bash gradlew --no-daemon lintRelease
