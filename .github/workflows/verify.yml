@@ -22,7 +22,19 @@ jobs:
       - run: npm test
       - run: npm run test:policy
       - run: npm run test:android-doubles
+      - name: Generate tablet candidate documentation from the live MCP registry
+        if: github.ref_name == 'charles-tablet-release'
+        run: npm run docs:tools
       - run: npm run check:docs
+      - name: Preserve generated candidate tool reference
+        if: github.ref_name == 'charles-tablet-release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: tablet-generated-tool-reference
+          path: |
+            docs/tools.json
+            docs/tools-reference.md
+          retention-days: 14
       - run: npm run test:cloud
   android:
     runs-on: ubuntu-24.04
@@ -38,5 +50,23 @@ jobs:
       - name: Install pinned Android SDK components
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
       - name: Compile and lint the original Android source
+        if: github.ref_name != 'charles-tablet-release'
         working-directory: android
         run: ./gradlew --no-daemon assembleRelease lintRelease
+      - name: Compile and lint without release credentials
+        if: github.ref_name == 'charles-tablet-release'
+        working-directory: android
+        run: ./gradlew --no-daemon compileReleaseJavaWithJavac lintRelease
+      - name: Prove missing release key stops packaging
+        if: github.ref_name == 'charles-tablet-release'
+        working-directory: android
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset CHARLES_RELEASE_KEYSTORE CHARLES_RELEASE_STORE_PASSWORD CHARLES_RELEASE_KEY_ALIAS CHARLES_RELEASE_KEY_PASSWORD
+          if ./gradlew --no-daemon packageRelease > "$RUNNER_TEMP/unsigned-package.log" 2>&1; then
+            echo "ERROR: unsigned packaging unexpectedly succeeded"
+            exit 1
+          fi
+          grep -F "Release signing is not configured; no distribution artifact may be published." "$RUNNER_TEMP/unsigned-package.log"
+          test ! -e app/build/outputs/apk/release/app-release.apk
