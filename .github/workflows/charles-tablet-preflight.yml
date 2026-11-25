@@ -39,3 +39,5 @@ jobs:
       - name: Compile prepared tablet identity and lint without distribution
         working-directory: android
         run: bash gradlew --no-daemon compileReleaseJavaWithJavac lintRelease
+      - name: Validate disposable signed APK (no distribution)
+        run: bash scripts/test-tablet-signing-lab.sh

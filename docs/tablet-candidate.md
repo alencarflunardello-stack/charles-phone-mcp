@@ -1,0 +1,7 @@
+# Charles tablet candidate 0.19.1
+
+This branch is a laboratory candidate, not an installation instruction or production release. The original upstream README and tracked tools documents describe the historical 0.19.0 baseline. Generate the current candidate reference using `npm ci --prefix server`, then `npm run docs:tools`. The expected catalog fingerprint is 57c5590ee84cacb4 (71 tools, API 1). Check both generated files using `sha256sum -c docs/tablet-catalog.sha256`. The versioned digests refer to the independently retrieved CI artifact from commit 305b3ed484f6d587c350d8b17fc4ff0ff4c54b39; change them only after reviewing the actual new schema.
+
+The source identity is prepared in a clean build checkout using `python3 scripts/prepare-charles-pilot.py`. Expected Android package br.charles.phonemcp, version 0.19.1, code 70, min SDK 30. The lab targets Android API 33. Neither successful compilation nor the catalog implies device compatibility.
+
+The preflight creates a temporary one-day lab certificate and signs a local APK, validates the real APK using Android SDK tools, tests rejection of an incorrect certificate, and deletes the temporary key and APK. No lab binary is uploaded. This cannot establish a persistent signing identity. Distribution requires a securely maintained owner signing key and independent trusted certificate and APK hashes. Do not copy a debug or disposable signing key to a real device. No pairing, connection, permission changes, or production deployment are performed by these tests.

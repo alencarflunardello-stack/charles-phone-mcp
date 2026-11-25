@@ -26,6 +26,9 @@ jobs:
         if: github.ref_name == 'charles-tablet-release'
         run: npm run docs:tools
       - run: npm run check:docs
+      - name: Check generated tablet catalog against the versioned reference
+        if: github.ref_name == 'charles-tablet-release'
+        run: sha256sum -c docs/tablet-catalog.sha256
       - name: Preserve generated candidate tool reference
         if: github.ref_name == 'charles-tablet-release'
         uses: actions/upload-artifact@v4
