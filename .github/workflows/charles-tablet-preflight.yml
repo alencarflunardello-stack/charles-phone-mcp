@@ -14,6 +14,13 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Check owner Codespaces script syntax and reject other environments
+        run: |
+          bash -n scripts/owner-build-codespaces.sh
+          if env -u CODESPACES bash scripts/owner-build-codespaces.sh --check; then
+            echo "ERROR: accepted non-Codespaces environment"
+            exit 1
+          fi
       - name: Test release metadata checker
         run: |
           python3 -m py_compile scripts/check-tablet-release.py

@@ -1,0 +1,9 @@
+# Owner release from tablet only (Codespaces)
+
+The approved application source is pinned to a0733689e4e5e6d2925096a56e100d0f81394ed0. Use a personal GitHub Codespace in a browser, never a Company Hero account or device. Before creating it, check included compute/storage and configure a zero-dollar spending limit with stop-usage enabled. The connected GitHub tools cannot create a Codespace or check the owner's billing. Use the 2-core machine, and do not enable paid usage.
+
+Open the tablet-release branch, create a Codespace on that branch, then use the browser VS Code File > Open Folder to open /workspaces, so the separate owner directory appears in Explorer. In its terminal, change to the cloned charles-phone-mcp directory and run:
+
+    bash scripts/owner-build-codespaces.sh --build
+
+The script checks the environment, installs JDK 17 in the cloud only if needed, downloads the Google Android command-line SDK using an officially published SHA-256 pin, asks the owner to review SDK licenses, checks out the approved commit, and builds using a password-protected persistent PKCS12 key. It stops before signing unless the owner confirms encrypted backup. The directory /workspaces/charles-owner-private is outside the Git repository; never commit, upload to chat, or publish the key or its password. Download backup/charles-release.p12 and backup/certificate.sha256 via the Explorer and keep the password separately. Preserve the same key and fingerprint for updates. Only the owner controls this step. If the private key has already been created, restore the backup instead of generating a different signing identity. Download the APK and public metadata from output/release.* only after validation. Stop/delete the Codespace after confirming the backup and downloads. No relay change, pairing, device permissions or installation is authorized by this script. The setup has not yet been exercised in a real owner Codespace.
