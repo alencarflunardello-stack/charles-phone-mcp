@@ -1,6 +1,26 @@
 plugins { id 'com.android.application' }
 
+// Release signing is supplied by the owner in a trusted build environment.
+// Never commit the keystore or passwords; never fall back to the debug key.
+def releaseCredentials = [
+    path: System.getenv('CHARLES_RELEASE_KEYSTORE'),
+    storePass: System.getenv('CHARLES_RELEASE_STORE_PASSWORD'),
+    alias: System.getenv('CHARLES_RELEASE_KEY_ALIAS'),
+    keyPass: System.getenv('CHARLES_RELEASE_KEY_PASSWORD')
+]
+def releaseSigningReady = releaseCredentials.values().every { it != null && !it.trim().isEmpty() }
+
 android {
+    signingConfigs {
+        if (releaseSigningReady) {
+            tabletRelease {
+                storeFile file(releaseCredentials.path)
+                storePassword releaseCredentials.storePass
+                keyAlias releaseCredentials.alias
+                keyPassword releaseCredentials.keyPass
+            }
+        }
+    }
     namespace 'fr.phonemcp'
     compileSdk 36
     buildToolsVersion '36.0.0'
@@ -18,8 +38,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            // Prototype installable. Replace with your private release signing configuration for distribution.
-            signingConfig signingConfigs.debug
+            if (releaseSigningReady) signingConfig signingConfigs.tabletRelease
         }
     }
     lint { abortOnError true }
@@ -28,4 +47,15 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation 'dev.rikka.shizuku:api:13.1.5'
     implementation 'dev.rikka.shizuku:provider:13.1.5'
+}
+
+// Fail before packaging a distribution artifact when the owner key is absent.
+tasks.configureEach { task ->
+    if (task.name in ['packageRelease', 'assembleRelease', 'bundleRelease', 'signReleaseBundle']) {
+        task.doFirst {
+            if (!releaseSigningReady || !file(releaseCredentials.path).isFile()) {
+                throw new GradleException('Release signing is not configured; no distribution artifact may be published.')
+            }
+        }
+    }
 }
