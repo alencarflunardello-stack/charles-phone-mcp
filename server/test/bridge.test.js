@@ -407,3 +407,26 @@ test('authorization identifies the service, escapes client identity and supports
   assert.equal(target.searchParams.get('error'),'access_denied');
   assert.equal(target.searchParams.get('state'),'denial');
 });
+
+test('authorization form preserves HTTPS origin without relaxing owner approval or origin checks',async t=>{
+  const f=await fixture(t);
+  const reg=await f.post('/register',{redirect_uris:[callback],client_name:'Browser regression',token_endpoint_auth_method:'none'});
+  assert.equal(reg.status,201);const client=await reg.json();
+  const query=new URLSearchParams({client_id:client.client_id,redirect_uri:callback,response_type:'code',code_challenge:challenge,code_challenge_method:'S256',scope:'phone.read',state:'origin-test'});
+  const page=await fetch(f.base+'/authorize?'+query);
+  assert.equal(page.status,200);assert.equal(page.headers.get('referrer-policy'),'strict-origin');
+  const html=await page.text(),nonce=html.match(/name="nonce" value="([^"]+)"/)[1],approvalId=html.match(/<code>([0-9a-f-]+)<\/code>/)[1];
+  const body=new URLSearchParams({nonce,decision:'allow'});
+  const submit=origin=>fetch(f.base+'/approve',{method:'POST',headers:{Origin:origin},body,redirect:'manual'});
+  assert.equal((await submit('null')).status,403);
+  assert.equal((await submit('https://untrusted.example')).status,403);
+  assert.equal((await submit(config.publicUrl)).status,401);
+  const admin={Authorization:'Bearer '+config.adminPassword};
+  const r=await f.post('/admin/oauth/request',{approvalId},admin);assert.equal(r.status,200);
+  const info=await r.json();
+  assert.equal((await f.post('/admin/oauth/request',{approvalId,decision:'allow',clientId:info.clientId,redirectUri:info.redirectUri,scopes:info.scopes},admin)).status,200);
+  const allowed=await submit(config.publicUrl);assert.equal(allowed.status,303);
+  assert.equal(allowed.headers.get('referrer-policy'),'no-referrer');
+  assert.equal(new URL(allowed.headers.get('location')).searchParams.get('state'),'origin-test');
+  assert.equal((await submit(config.publicUrl)).status,400);
+});

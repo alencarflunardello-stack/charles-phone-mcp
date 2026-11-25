@@ -64,6 +64,10 @@ export function installOAuth(app, config) {
       scopes,approvalId:randomUUID(),approved:false,expires:Date.now()+300000});
     const request=pending.get(digest(nonce));
     res.set('Content-Security-Policy',authorizationCsp(q.redirect_uri));
+    // HTML form POSTs under no-referrer can send Origin: null. Keep the
+    // real HTTPS origin for this page only, without sending URL/query details.
+    // The global origin allowlist and owner-authenticated approval remain intact.
+    res.set('Referrer-Policy','strict-origin');
     res.type('html').send(`<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Charles PhoneMCP — autorização do proprietário</title>
       <body><main><h1>Charles PhoneMCP — autorizar conexão</h1><p>Aplicativo solicitante: ${escape(client.client_name)} (nome informado pelo próprio cliente; confira também o destino abaixo).</p>
       <p>Esta autorização permite ${scopes.includes('phone.write') ? 'ler e controlar' : 'ler'} somente os aplicativos selecionados no PhoneMCP.</p>
