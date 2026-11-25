@@ -1,0 +1,27 @@
+name: Tablet feature compatibility audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [charles-tablet-release]
+    paths:
+      - scripts/check-isolation-compatibility.py
+      - android/app/src/main/java/**
+      - android/app/build.gradle
+permissions:
+  contents: read
+jobs:
+  static-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - run: python3 scripts/check-isolation-compatibility.py --self-test
+      - name: Report API 33 separately from installation
+        run: |
+          python3 scripts/check-isolation-compatibility.py --device-api 33
+          set +e
+          python3 scripts/check-isolation-compatibility.py --device-api 33 --require-separate
+          result=$?
+          set -e
+          test "$result" -eq 1
+          echo "Baseline incompatible as expected; not a release approval."
